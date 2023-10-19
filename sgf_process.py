@@ -1,5 +1,5 @@
 from sgfmill import sgf
-class sgf_process:
+class Sgf_process:
 
     def remove_stone_path(self, array, sgf):
         """

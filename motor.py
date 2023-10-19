@@ -1,4 +1,4 @@
-class motor:
+class Motor:
     """
     Interfaces with XY motor. Deals with moving given a list or some other param
     """
