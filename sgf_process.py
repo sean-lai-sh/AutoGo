@@ -1,5 +1,14 @@
 from sgfmill import sgf
-class sgf_process:
+from sgfmill import sgf_board_interface
+
+class Sgf_process:
+    def __init__(self, file_extension="test_file_archives/test_file_9x9.sgf"):
+        ### Read the file
+        with open(file_extension, "rb") as f:
+            self.game = sgf.Sgf_game.from_bytes(f.read())
+        f.close()
+
+
 
     def remove_stone_path(self, array, sgf):
         """
@@ -9,5 +18,7 @@ class sgf_process:
         """
 
     def move_stone_path(self, array, sgf):
+        pass
 
     def identify(self):
+        pass
