@@ -10,7 +10,19 @@ game_processing = Sgf_process()
 game = game_processing.game
 game_arr = [[None for i in range(9)] for k in range(9)]
 game_board, plays = sgf_moves.get_setup_and_moves(game)
-print(ascii_boards.render_board(game_board))
+# print(ascii_boards.render_board(game_board))
+
+def vertex_to_idx(vertex):
+    Str_val = vertex[0].lower()
+    int_val = "".join(vertex[1:])
+    row = chr(97 + int(int_val))
+    col = Str_val
+    return col + row
+
+
+print(vertex_to_idx("A19"))
+
+
 
 
 ### Writing a game file: upon input

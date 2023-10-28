@@ -4,9 +4,9 @@ class Motor:
     """
     # global num of rotations.
     def __init__(self, motor_x, motor_y):
+        pass
 
-
-    # assume pos is a valid tuple
+        # assume pos is a valid tuple
     def move(self, pos):
-
+        pass
     ### Other methods to come
