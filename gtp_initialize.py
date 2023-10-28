@@ -1,13 +1,13 @@
 from subprocess import Popen, PIPE
 from gtp import gtp
 
-
+# Code is a fork from Jtauber gtp modules
 class GTPSubProcess(object):
-
     def __init__(self, label, args):
         self.label = label
         self.subprocess = Popen(args, stdin=PIPE, stdout=PIPE)
         print("{} subprocess created".format(label))
+
 
     def send(self, data):
         print("sending {}: {}".format(self.label, data))

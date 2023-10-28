@@ -1,4 +1,4 @@
-import gtp_initialize as gi
+from gtp_initialize import GTPFacade
 from gtp import gtp
 import time
 Sleep_Constant = 10
@@ -7,7 +7,7 @@ Sleep_Constant = 10
 def start_player_vs_ai():
     # Query Input for mode
     AI_settings = ["gnugo", "--mode", "gtp", "--level", "10"]
-    AI = gi.GTPFacade("white", AI_settings)
+    AI = GTPFacade("white", AI_settings)
     AI.boardsize(9)
     AI.komi(6.5)
     AI.clear_board()
