@@ -36,15 +36,16 @@ print(vertex_to_idx("A19"))
 # tc = [[x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]]
 # re_lst = test_sgf.remove(Stone_type.black, np.array([x, y]), tc)[1]
 # print("re", re_lst)
-# board = np.array([
-#     [1, -1, 0, 0, -1, 1, 0],
-#     [1, -1, 0, 0, -1, 1, 1],
-#     [1, 1, -1, 1, -1, 1, 1],
-#     [-1, -1, 1, -1, 1, -1, -1],
-#     [0, 0, 0, 1, 0, 0, -1],
-#     [0, 0, 0, 0, 0, -1, 1],
-#     [0, 0, 0, 0, 0, 0, 1],
-# ])
+board = np.array([
+    [1, 0, 1, 1, -1, 1, 0],
+    [1, -1, 1, 1, -1, 1, 1],
+    [1, 1, -1, 1, -1, 1, 1],
+    [-1, -1, 0, -1, 1, -1, -1],
+    [0, 0, 0, 1, 0, 0, -1],
+    [0, 0, 0, 0, 0, -1, 1],
+    [0, 0, 0, 0, 0, 0, 1],
+])
+## 0,0 1,0 2,1 0,2 1,2 0,3 1,3 2,3
 # test_sgf2 = Sgf_process(7, board, "")
 # re_lst2 = []
 # final_lst = test_sgf2.remove(Stone_type.black, [0,0], std_check([0,0]))
@@ -57,8 +58,9 @@ board2 = np.array([
     [1, 1, -1, 0],
     [-1, -1, 0, 0],
 ])
-# test3 = Sgf_process(4,board2, "")
-# print(test3.update_game_arr("B4", Stone_type.white))
+test3 = Sgf_process(7, file_name="", AI_reference=board)
+print(test3.update_game_arr("B7", Stone_type.white))
+print(board)
 
 
 with open("test_file_archives/test_file_9x9.sgf", "rb") as f:
