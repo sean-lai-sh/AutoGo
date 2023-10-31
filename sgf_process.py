@@ -1,6 +1,5 @@
 import numpy as np
-from sgfmill import sgf
-from sgfmill import sgf_board_interface
+from sgfmill import sgf, sgf_board_interface
 from gtp import gtp
 from gtp_initialize import GTPFacade
 from enum import IntEnum
@@ -52,6 +51,13 @@ def std_check(coord):
     return tc
 
 
+def to_color(TYPE):
+    if TYPE == Stone_type.black:
+        return 'b'
+    else:
+        return 'w'
+
+
 class Sgf_process:
     def __init__(self, size, file_name, AI_reference):
         # Init Output file that Sabaki can later open
@@ -59,14 +65,16 @@ class Sgf_process:
         self.size = size
         # Init Game
         # self.game = sgf.Sgf_game(size=self.size)
-        self.AI = AI_reference
+        self.game = AI_reference
         # self.game_arr = np.zeros((self.size, self.size))
         # self.board = np.zeros((self.size,self.size))
-        self.board = file_name
+        self.board = AI_reference
+
 
     def update_game_arr(self, gtp_vertex, TYPE: Stone_type):
         # ASSUMES THAT TYPE IS BLACK OR WHITE VALUED AS 1 or -1 RESPECTIVELY
         coordinate = np.array(from_gtp(gtp_vertex, self.size))
+        # gtp -> minigo, i.e row col format
         # print(coordinate[0], coordinate[1])
         self.board[coordinate[0]][coordinate[1]] = TYPE
         to_check = std_check(coordinate)
@@ -80,6 +88,8 @@ class Sgf_process:
                     final_lst += data
                 else:
                     final_lst = data
+        sgf_coord = to_sgf(coordinate)
+        self.add_to_sgf([to_color(TYPE), sgf_coord, None])
         return final_lst
 
     def isValid(self, coord):
@@ -128,8 +138,24 @@ class Sgf_process:
         else:
             return 0, final_lst
 
-    def move_stone_path(self, array, sgf):
+    def move_stone_path(self, array, file):
         pass
 
+    def add_to_sgf(self, move_data):
+        node = self.game.extend_main_sequence()
+        node.set_move(move_data[0], move_data[1])
+        if move_data[2] is not None:
+            node.set("C", move_data.comment)
     def identify(self):
         pass
+
+    def create_sgf(self):
+        try:
+            with open(self.file_out_name, "wb") as f:
+                f.write(self.game.serialise())
+            return True
+        except FileNotFoundError:
+            return False
+
+
+

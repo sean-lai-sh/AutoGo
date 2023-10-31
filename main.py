@@ -27,37 +27,39 @@ print(vertex_to_idx("A19"))
 
 ### Writing a game file: upon input
 # BASE CASE
-test_arr = np.array([[1, -1], [-1, 0]])
-test_sgf = Sgf_process(2, test_arr, "")
-re_lst = []
-print(test_arr)
-x = 0
-y = 0
-tc = [[x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]]
-re_lst = test_sgf.remove(Stone_type.black, np.array([x, y]), tc)[1]
-print("re", re_lst)
-board = np.array([
-    [1, -1, 0, 0, -1, 1, 0],
-    [1, -1, 0, 0, -1, 1, 1],
-    [1, 1, -1, 1, -1, 1, 1],
-    [-1, -1, 1, -1, 1, -1, -1],
-    [0, 0, 0, 1, 0, 0, -1],
-    [0, 0, 0, 0, 0, -1, 1],
-    [0, 0, 0, 0, 0, 0, 1],
-])
-test_sgf2 = Sgf_process(7, board, "")
-re_lst2 = []
-final_lst = test_sgf2.remove(Stone_type.black, [0,0], std_check([0,0]))
-print("re_lst2:", final_lst)
-print()
-
+# test_arr = np.array([[1, -1], [-1, 0]])
+# test_sgf = Sgf_process(2, test_arr, "")
+# re_lst = []
+# print(test_arr)
+# x = 0
+# y = 0
+# tc = [[x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]]
+# re_lst = test_sgf.remove(Stone_type.black, np.array([x, y]), tc)[1]
+# print("re", re_lst)
+# board = np.array([
+#     [1, -1, 0, 0, -1, 1, 0],
+#     [1, -1, 0, 0, -1, 1, 1],
+#     [1, 1, -1, 1, -1, 1, 1],
+#     [-1, -1, 1, -1, 1, -1, -1],
+#     [0, 0, 0, 1, 0, 0, -1],
+#     [0, 0, 0, 0, 0, -1, 1],
+#     [0, 0, 0, 0, 0, 0, 1],
+# ])
+# test_sgf2 = Sgf_process(7, board, "")
+# re_lst2 = []
+# final_lst = test_sgf2.remove(Stone_type.black, [0,0], std_check([0,0]))
+# print("re_lst2:", final_lst)
+# print()
+#
 board2 = np.array([
     [1, -1, 1, 1],
     [1, -1, -1, -1],
     [1, 1, -1, 0],
     [-1, -1, 0, 0],
 ])
-test3 = Sgf_process(4,board2, "")
-print(test3.update_game_arr("B4", Stone_type.white))
+# test3 = Sgf_process(4,board2, "")
+# print(test3.update_game_arr("B4", Stone_type.white))
 
 
+with open("test_file_archives/test_file_9x9.sgf", "rb") as f:
+    game = sgf.Sgf_game.from_bytes(f.read())
