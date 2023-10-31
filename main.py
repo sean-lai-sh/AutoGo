@@ -49,3 +49,15 @@ test_sgf2 = Sgf_process(7, board, "")
 re_lst2 = []
 final_lst = test_sgf2.remove(Stone_type.black, [0,0], std_check([0,0]))
 print("re_lst2:", final_lst)
+print()
+
+board2 = np.array([
+    [1, -1, 1, 1],
+    [1, -1, -1, -1],
+    [1, 1, -1, 0],
+    [-1, -1, 0, 0],
+])
+test3 = Sgf_process(4,board2, "")
+print(test3.update_game_arr("B4", Stone_type.white))
+
+

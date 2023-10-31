@@ -18,6 +18,13 @@ def gtp_to_sgf(vertex, board_size):
     return to_conv
 
 
+def text_to_gtp(coord_str):
+    letter_val = coord_str[0].upper()
+    if letter_val == "I":
+        letter_val = "J"
+    return letter_val + coord_str[1:]
+
+
 def from_gtp(gtpc, bs):
     """Converts from a GTP coordinate to a Minigo coordinate."""
     gtpc = gtpc.upper()
@@ -34,13 +41,16 @@ def to_sgf(coord):
         return ''
     return _SGF_COLUMNS[coord[1]] + _SGF_COLUMNS[coord[0]]
 
+
 _SGF_COLUMNS = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 _GTP_COLUMNS = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'
+
 
 def std_check(coord):
     x, y = coord[0], coord[1]
     tc = np.array([[x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]])
     return tc
+
 
 class Sgf_process:
     def __init__(self, size, file_name, AI_reference):
@@ -60,21 +70,21 @@ class Sgf_process:
         # print(coordinate[0], coordinate[1])
         self.board[coordinate[0]][coordinate[1]] = TYPE
         to_check = std_check(coordinate)
-        # final_lst = self.std_remove(-TYPE, to_check[0])[1]
-        # print("lst:",final_lst)
-        # np.delete(to_check, to_check[0])
-        # for t_coord in to_check:
-        #     if self.isValid(t_coord) and self.board[t_coord[0]][t_coord[1]] == -TYPE:
-        #         data = self.std_remove(-TYPE, t_coord)[1]
-        #         print("Data:", data)
-        #         if len(data) > 0:
-        #             np.concatenate(final_lst, data)
-        #         else:
-        #             final_lst = data
-        # return final_lst
+        final_lst = []
+        print("lst:", final_lst)
+        for t_coord in to_check:
+            if self.isValid(t_coord) and self.board[t_coord[0]][t_coord[1]] == -TYPE:
+                data = self.std_remove(-TYPE, t_coord)[1]
+                print("Data:", data)
+                if len(data) > 0:
+                    final_lst += data
+                else:
+                    final_lst = data
+        return final_lst
 
     def isValid(self, coord):
         return (-1 < coord[0] < len(self.board)) and (-1 < coord[1] < len(self.board))
+
     def remove_stone_path(self, array, sgf):
         """
         :param array:
@@ -92,7 +102,7 @@ class Sgf_process:
         # print("Current Coords to Check", to_check)
         for coord in to_check:
             x, y = coord[0], coord[1]
-            if not ((-1 < x < len(self.board)) and (-1 < y < len(self.board))):
+            if not self.isValid(coord):
                 check_sum -= 1
             elif self.board[x][y] == -color:
                 check_sum -= 1

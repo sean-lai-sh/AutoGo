@@ -14,7 +14,7 @@ def start_player_vs_ai():
     first_pass = False
     while True:
         player_vertex = get_vertex()  # TO Implement
-        if vertex == gtp.PASS:
+        if player_vertex == gtp.PASS:
             if first_pass:
                 break
             else:
