@@ -71,7 +71,7 @@ class Sgf_process:
         #             np.concatenate(final_lst, data)
         #         else:
         #             final_lst = data
-        return final_lst
+        # return final_lst
 
     def isValid(self, coord):
         return (-1 < coord[0] < len(self.board)) and (-1 < coord[1] < len(self.board))
