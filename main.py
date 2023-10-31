@@ -2,7 +2,7 @@ import numpy as np
 from sgfmill import sgf
 from sgfmill import sgf_moves
 from sgfmill import ascii_boards
-from sgf_process import Sgf_process, Stone_type
+from sgf_process import Sgf_process, Stone_type, std_check
 
 from sgfmill import ascii_boards
 
@@ -34,8 +34,8 @@ print(test_arr)
 x = 0
 y = 0
 tc = [[x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]]
-test_sgf.remove(Stone_type.black, [x, y], tc, re_lst)
-print(re_lst)
+re_lst = test_sgf.remove(Stone_type.black, np.array([x, y]), tc)[1]
+print("re", re_lst)
 board = np.array([
     [1, -1, 0, 0, -1, 1, 0],
     [1, -1, 0, 0, -1, 1, 1],
@@ -47,5 +47,5 @@ board = np.array([
 ])
 test_sgf2 = Sgf_process(7, board, "")
 re_lst2 = []
-test_sgf2.remove(Stone_type.black, [x, y], tc, re_lst2)
-print("re_lst2:", re_lst2)
+final_lst = test_sgf2.remove(Stone_type.black, [0,0], std_check([0,0]))
+print("re_lst2:", final_lst)
