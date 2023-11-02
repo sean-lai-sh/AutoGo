@@ -14,8 +14,9 @@ Sleep_Constant = values.SLEEP_CONST
 
 PATH = "/"
 
-end_game = False # Global Var for coroutine
+end_game = False  # Global Var for coroutine
 first_pass = False
+
 
 def generate_valid_file_path():
     f_name = "test"
@@ -43,6 +44,20 @@ def init_ai(LCD):
     return AI
 
 
+def get_vertex(visuals):
+    # input validation
+    visuals.set_input("Enter your move", "Letter Number")
+    valid_input_given = False
+    while not valid_input_given:
+        visuals.output()
+        user_input = input("enter your move").upper()
+        if user_input[0] in "ABCDEFGHI" and user_input[1:].isdigit() and 1 <= user_input[1:] <= 9:
+            valid_input_given = True
+            continue
+        visuals.set_input("Invalid move, do", "Letter Number")
+    return user_input
+
+
 def game_logic(game_input, board):
     global first_pass, end_game
     remove_lst = []
@@ -67,23 +82,23 @@ def start_player_vs_ai():
     game_board = Sgf_process(9, f_name, AI)
     end_game, first_pass = False, False
     while end_game is False:
-        vertex = get_vertex()  # TO Implement
-        game_logic(vertex, game_board) # Process input regarding game state, update Sgf
-        AI.play(gtp.BLACK, vertex) # Play move in AI engine
+        vertex = get_vertex(LCD)  # TO Implement
+        game_logic(vertex, game_board)  # Process input regarding game state, update Sgf
+        AI.play(gtp.BLACK, vertex)  # Play move in AI engine
         # Vertex to Actual Motor
 
         # Sleep while waiting
-        time.sleep(Sleep_Constant) # Wait if need to remove
-        AI.showboard() # Display via Ascii for debugging
-        vertex = AI.genmove(gtp.WHITE) # Generate a move
-        coordinate_out = ", ".join(from_gtp(vertex, 9)) # Get string of display coord to row col
-        LCD.set_input("AI Plays at", coordinate_out) # Print it out through LCD
-        game_logic(vertex, game_board) # Process input for AI
-        time.sleep(Sleep_Constant) # Sleep if needed
+        time.sleep(Sleep_Constant)  # Wait if need to remove
+        AI.showboard()  # Display via Ascii for debugging
+        vertex = AI.genmove(gtp.WHITE)  # Generate a move
+        coordinate_out = ", ".join(from_gtp(vertex, 9))  # Get string of display coord to row col
+        LCD.set_input("AI Plays at", coordinate_out)  # Print it out through LCD
+        game_logic(vertex, game_board)  # Process input for AI
+        time.sleep(Sleep_Constant)  # Sleep if needed
 
-    final_score = AI.final_score() # Store the final score
+    final_score = AI.final_score()  # Store the final score
     AI.close()
-    game_board.create_sgf() # Create a file
+    game_board.create_sgf()  # Create a file
     AI.showboard()
     # Query Input for other settings I.e Komi & what not
     # Init GnuGo
