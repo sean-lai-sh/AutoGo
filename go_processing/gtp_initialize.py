@@ -71,6 +71,7 @@ GNUGO_LEVEL_ONE = ["gnugo", "--mode", "gtp", "--level", "1"]
 GNUGO_MONTE_CARLO = ["gnugo", "--mode", "gtp", "--monte-carlo"]
 
 
+
 # black = GTPFacade("black", GNUGO)
 # white = GTPFacade("white", GNUGO_LEVEL_ONE)
 #
