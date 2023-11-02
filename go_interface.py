@@ -6,11 +6,11 @@ import time
 import random
 import string
 from sgf_process import Sgf_process
+from lcd import lcd_visuals
 
 Sleep_Constant = 10
 
 PATH = "/"
-
 
 def generate_valid_file_path():
     f_name = "test"
@@ -19,7 +19,19 @@ def generate_valid_file_path():
         f_name += random.choice(string.ascii_letters)
     return PATH + f_name + ext_name
 
-
+def get_vertex():
+    #input validation
+    lcd_display = lcd_visuals()
+    lcd.lcd_display.set_input("Enter your move", "Letter Number")
+    valid_input_given = False
+    while not valid_input_given:
+        lcd.lcd_display.output()
+        user_input = input("enter your move").upper()
+        if user_input[0] in "ABCDEFGHI" and user_input[1:].isdigit() and 1 <= user_input[1:] <= 9:
+            valid_input_given = True
+            continue
+        lcd.lcd_display.set_input("Invalid move, do", "Letter Number")
+    return user_input
 def start_player_vs_ai():
     # Query Input for mode
     AI_settings = ["gnugo", "--mode", "gtp", "--level", "10"]
