@@ -14,6 +14,7 @@ Install Dependencies
 ````
 pip3 install numpy
 pip3 install sgfmill
+pip3 install pyserial
 ````
 
 # Documentation:

@@ -64,36 +64,43 @@ class Sgf_process:
         self.file_out_name = file_name
         self.size = size
         # Init Game
-        # self.game = sgf.Sgf_game(size=self.size)
-        self.game = AI_reference
+        self.game = sgf.Sgf_game(size=self.size)
+        # self.game = AI_reference
         # self.game_arr = np.zeros((self.size, self.size))
-        # self.board = np.zeros((self.size,self.size))
         self.board = AI_reference
-
+        # self.board = AI_reference
+        self.checked_lst = []
 
     def update_game_arr(self, gtp_vertex, TYPE: Stone_type):
         # ASSUMES THAT TYPE IS BLACK OR WHITE VALUED AS 1 or -1 RESPECTIVELY
-        coordinate = np.array(from_gtp(gtp_vertex, self.size))
+        coordinate = from_gtp(gtp_vertex, self.size)
+        print(coordinate)
         # gtp -> minigo, i.e row col format
         # print(coordinate[0], coordinate[1])
         self.board[coordinate[0]][coordinate[1]] = TYPE
         to_check = std_check(coordinate)
         final_lst = []
-        print("lst:", final_lst)
+        print("Checking indices:", to_check)
         for t_coord in to_check:
             if self.isValid(t_coord) and self.board[t_coord[0]][t_coord[1]] == -TYPE:
                 data = self.std_remove(-TYPE, t_coord)[1]
-                print("Data:", data)
-                if len(data) > 0:
-                    final_lst += data
+                 # print("Data:", data)
+                if len(final_lst) > 0:
+                    final_lst.extend(data)
                 else:
                     final_lst = data
         sgf_coord = to_sgf(coordinate)
-        self.add_to_sgf([to_color(TYPE), sgf_coord, None])
+        # print(sgf_coord)
+        sgf_color = to_color(TYPE)
+        # print(sgf_color)
+        self.add_to_sgf([sgf_color, coordinate, None])
+        for k in final_lst:
+            x, y = k[0], k[1]
+            self.board[x][y] = Stone_type.empty
         return final_lst
 
     def isValid(self, coord):
-        return (-1 < coord[0] < len(self.board)) and (-1 < coord[1] < len(self.board))
+        return (-1 < coord[0] < self.size) and (-1 < coord[1] < self.size)
 
     def remove_stone_path(self, array, sgf):
         """
@@ -106,6 +113,7 @@ class Sgf_process:
         return self.remove(color, coords, std_check(coords))
 
     def remove(self, color: Stone_type, s_coord, to_check):
+        self.checked_lst.append(s_coord)
         check_sum = len(to_check)
         final_lst = []
         # print("Current Coord to check: ", s_coord)
@@ -118,15 +126,9 @@ class Sgf_process:
                 check_sum -= 1
             elif self.board[x][y] == color:
                 new_check = std_check(coord)
-                k = 0
-                l_n_c = len(new_check)
-                while k < l_n_c:
-                    if np.array_equal(new_check[k], s_coord):
-                        new_check = np.delete(new_check, k, 0)
-                        l_n_c -= 1
-                    else:
-                        k += 1
-                next_s = self.remove(color, [x, y], new_check)
+                next_check = self.prev_dup(new_check, self.checked_lst)
+                print(self.checked_lst)
+                next_s = self.remove(color, [x, y], next_check)
                 # print(next_s)
                 check_sum += next_s[0]
                 final_lst = final_lst + next_s[1]
@@ -141,11 +143,29 @@ class Sgf_process:
     def move_stone_path(self, array, file):
         pass
 
+    def prev_dup(self, to_check, checked):
+        k = 0
+        l_n_c = len(to_check)
+        to_re = to_check.copy()
+        while k < l_n_c:
+            was_found = False
+            for s_coord in checked:
+                if np.array_equal(to_re[k], s_coord):
+                    to_re = np.delete(to_re, k, 0)
+                    l_n_c -= 1
+                    was_found = True
+                    break
+            if not was_found:
+                k += 1
+        return to_re
+
     def add_to_sgf(self, move_data):
         node = self.game.extend_main_sequence()
         node.set_move(move_data[0], move_data[1])
         if move_data[2] is not None:
             node.set("C", move_data.comment)
+        print(move_data)
+
     def identify(self):
         pass
 
@@ -156,6 +176,3 @@ class Sgf_process:
             return True
         except FileNotFoundError:
             return False
-
-
-
