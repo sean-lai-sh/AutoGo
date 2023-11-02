@@ -51,7 +51,7 @@ def get_vertex(visuals):
     while not valid_input_given:
         visuals.output()
         user_input = input("enter your move").upper()
-        if user_input[0] in "ABCDEFGHI" and user_input[1:].isdigit() and 1 <= user_input[1:] <= 9:
+        if user_input[0] in "ABCDEFGHI" and user_input[1:].isdigit() and 1 <= int(user_input[1:]) <= 9:
             valid_input_given = True
             continue
         visuals.set_input("Invalid move, do", "Letter Number")
