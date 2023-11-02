@@ -7,6 +7,7 @@ if __name__ == '__main__':
 
     cond = True
 
+
     while cond is True:
         input_str = raw_input("put something here: ")
         input_str = bytes(input_str + "\n")
