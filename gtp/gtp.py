@@ -61,7 +61,7 @@ WHITE = -1
 BLACK = +1
 EMPTY = 0
 
-PASS = (0, 0)
+PASS = "pass"
 RESIGN = "resign"
 
 

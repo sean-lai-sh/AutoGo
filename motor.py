@@ -5,7 +5,7 @@ class Motors:
     def __init__(self, start_pos = None):
         self.start_pos = start_pos
 
-    def get_user_input():
+    def get_user_input(self):
         res = input()
         return res    
 

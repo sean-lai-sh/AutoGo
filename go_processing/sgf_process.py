@@ -1,7 +1,5 @@
 import numpy as np
-from sgfmill import sgf, sgf_board_interface
-from gtp import gtp
-from gtp_initialize import GTPFacade
+from sgfmill import sgf
 from enum import IntEnum
 
 

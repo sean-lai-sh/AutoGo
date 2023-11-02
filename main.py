@@ -1,10 +1,6 @@
 import numpy as np
 from sgfmill import sgf
-from sgfmill import sgf_moves
-from sgfmill import ascii_boards
-from sgf_process import Sgf_process, Stone_type, std_check
-
-from sgfmill import ascii_boards
+from go_processing.sgf_process import Sgf_process, Stone_type
 
 
 # # Reading game from bytes: TO CHANGE TO GAME FILE ONCE CODES READY
