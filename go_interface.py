@@ -48,6 +48,7 @@ def get_vertex(visuals):
     # input validation
     visuals.set_input("Enter your move", "Letter Number")
     valid_input_given = False
+    user_input = ""
     while not valid_input_given:
         visuals.output()
         user_input = input("enter your move").upper()
