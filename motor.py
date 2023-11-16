@@ -42,7 +42,7 @@ class Motors:
 
     def move_along_path(self, path):
         for move in path:
-            send_motor_instruction(move)
+            self.send_motor_instruction(move)
 
 
 motors = Motors("A1")
