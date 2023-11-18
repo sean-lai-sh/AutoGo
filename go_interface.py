@@ -53,19 +53,27 @@ def get_vertex(visuals):
     while not valid_input_given:
         visuals.output()
         user_input = input("enter your move").upper()
-        if user_input == "PASS"
+        if user_input == "PASS":
             valid_input_given = True
         elif user_input[0] in "ABCDEFGHI" and user_input[1:].isdigit() and 1 <= user_input[1:] <= 9:
             valid_input_given = True
         else:
             visuals.set_input("Invalid move, do", "Letter Number")
 
-    return user_input
+    return text_to_gtp(user_input)
 
 """
+Input:
 game_input : a gtp coordinate
 board: a board class object
+motor: motors object
 
+Function determines 
+if game is ending here,
+else 
+1. move the stones to the spot
+2. Update our Sgf_Process object game state 
+3. Remove any stone(s) from our initial move
 """
 def game_logic(game_input, board: Sgf_Process, motor: motors):
     global first_pass, end_game
