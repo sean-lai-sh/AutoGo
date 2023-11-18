@@ -56,7 +56,7 @@ def to_color(TYPE):
         return 'w'
 
 
-class Sgf_process:
+class Sgf_Process:
     def __init__(self, size, file_name, AI_reference):
         # Init Output file that Sabaki can later open
         self.file_out_name = file_name
@@ -111,6 +111,21 @@ class Sgf_process:
         return self.remove(color, coords, std_check(coords))
 
     def remove(self, color: Stone_type, s_coord, to_check):
+        def prev_dup( to_check, checked):
+            k = 0
+            l_n_c = len(to_check)
+            to_re = to_check.copy()
+            while k < l_n_c:
+                was_found = False
+                for s_coord in checked:
+                    if np.array_equal(to_re[k], s_coord):
+                        to_re = np.delete(to_re, k, 0)
+                        l_n_c -= 1
+                        was_found = True
+                        break
+                if not was_found:
+                    k += 1
+            return to_re
         self.checked_lst.append(s_coord)
         check_sum = len(to_check)
         final_lst = []
@@ -124,7 +139,7 @@ class Sgf_process:
                 check_sum -= 1
             elif self.board[x][y] == color:
                 new_check = std_check(coord)
-                next_check = self.prev_dup(new_check, self.checked_lst)
+                next_check = prev_dup(new_check, self.checked_lst)
                 print(self.checked_lst)
                 next_s = self.remove(color, [x, y], next_check)
                 # print(next_s)
@@ -141,21 +156,6 @@ class Sgf_process:
     def move_stone_path(self, array, file):
         pass
 
-    def prev_dup(self, to_check, checked):
-        k = 0
-        l_n_c = len(to_check)
-        to_re = to_check.copy()
-        while k < l_n_c:
-            was_found = False
-            for s_coord in checked:
-                if np.array_equal(to_re[k], s_coord):
-                    to_re = np.delete(to_re, k, 0)
-                    l_n_c -= 1
-                    was_found = True
-                    break
-            if not was_found:
-                k += 1
-        return to_re
 
     def add_to_sgf(self, move_data):
         node = self.game.extend_main_sequence()
