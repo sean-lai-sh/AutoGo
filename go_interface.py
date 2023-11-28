@@ -30,18 +30,18 @@ def generate_valid_file_path():
 def get_setting(visual: lcd_visuals):
     val = 0
     while not (isinstance(val, int) and 1 <= int(val) <= 10):
-        val = input("Input level of code")
+        val = input("Input level of AI")
     return str(val)
 
 
 def init_ai(LCD):
-    level_setting = get_setting(LCD)
-    AI_settings = values.gen_gnugo_preset()
+    level_setting = get_setting(LCD)  # Query Input for other settings I.e Komi & what not
+    AI_settings = values.gen_gnugo_preset() # Use our preset values to save time for comission testing
     AI_settings.append(level_setting)
-    AI = GTPFacade("white", AI_settings)
-    AI.boardsize(9)
-    AI.komi(6.5)
-    AI.clear_board()
+    AI = GTPFacade("white", AI_settings) # Set it to white. Future versions need to implement player choosing starting sides
+    AI.boardsize(9) # Set boardsize to a 9x9 square. Change function if board used is a bigger one
+    AI.komi(6.5) # Default komi behavior
+    AI.clear_board() # Ensure previous
     return AI
 
 
@@ -98,6 +98,7 @@ def start_player_vs_ai():
     # Query Input for mode
     global end_game, first_pass
     LCD = lcd_visuals()
+    # Init GnuGo
     AI = init_ai(LCD)
     motorSys = motors()
     f_name = generate_valid_file_path()
@@ -122,8 +123,7 @@ def start_player_vs_ai():
     AI.close()
     game_board.create_sgf()  # Create a file
     AI.showboard()
-    # Query Input for other settings I.e Komi & what not
-    # Init GnuGo
+
     # Start Game
     # End game when needed
     return final_score
