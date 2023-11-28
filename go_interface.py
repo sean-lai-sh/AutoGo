@@ -29,19 +29,26 @@ def generate_valid_file_path():
 
 def get_setting(visual: lcd_visuals):
     val = 0
-    while not (isinstance(val, int) and 1 <= int(val) <= 10):
+    while not (isinstance(val, int) and 1 <= int(val) <= 12):
         val = input("Input level of AI")
+    if val == 12:
+        return "LZBT"
     return str(val)
 
 
 def init_ai(LCD):
     level_setting = get_setting(LCD)  # Query Input for other settings I.e Komi & what not
-    AI_settings = values.gen_gnugo_preset() # Use our preset values to save time for comission testing
-    AI_settings.append(level_setting)
-    AI = GTPFacade("white", AI_settings) # Set it to white. Future versions need to implement player choosing starting sides
-    AI.boardsize(9) # Set boardsize to a 9x9 square. Change function if board used is a bigger one
-    AI.komi(6.5) # Default komi behavior
-    AI.clear_board() # Ensure previous
+    AI_settings = ""
+    if level_setting == "LZBT":
+        AI_settings = values.gen_leelazero_preset()
+    else:
+        AI_settings = values.gen_gnugo_preset()  # Use our preset values to save time for comission testing
+        AI_settings.append(level_setting)
+    AI = GTPFacade("white",
+                   AI_settings)  # Set it to white. Future versions need to implement player choosing starting sides
+    AI.boardsize(9)  # Set boardsize to a 9x9 square. Change function if board used is a bigger one
+    AI.komi(6.5)  # Default komi behavior
+    AI.clear_board()  # Ensure previous
     return AI
 
 
@@ -55,12 +62,15 @@ def get_vertex(visuals):
         user_input = input("enter your move").upper()
         if user_input == "PASS":
             valid_input_given = True
+
         elif user_input[0] in "ABCDEFGHI" and user_input[1:].isdigit() and 1 <= user_input[1:] <= 9:
             valid_input_given = True
+
         else:
             visuals.set_input("Invalid move, do", "Letter Number")
 
     return text_to_gtp(user_input)
+
 
 """
 Input:
@@ -79,19 +89,19 @@ def game_logic(game_input, board: Sgf_Process, motor: motors):
     global first_pass, end_game
     remove_lst = []
 
-    if game_input == gtp.PASS: # Did they pass
+    if game_input == gtp.PASS:  # Did they pass
         if first_pass:
             end_game = True
         else:
             first_pass = True
     else:
-        motor.move(game_input) # move to the space
+        motor.move(game_input)  # move to the space
         print("Putting Stone", game_input)
         remove_lst = board.update_game_arr(gtp.BLACK, game_input)
         first_pass = False
     if len(remove_lst) > 0:
         print("Removing: ", str(len(remove_lst)), "Nodes from board")
-        motor.multi_move(remove_lst) # remove all the stones from the move
+        motor.multi_move(remove_lst)  # remove all the stones from the move
 
 
 def start_player_vs_ai():

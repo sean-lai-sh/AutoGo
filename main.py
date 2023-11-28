@@ -1,7 +1,7 @@
 import numpy as np
 from sgfmill import sgf
 from go_processing import Sgf_Process, Stone_type
-from motor import *
+
 
 # # Reading game from bytes: TO CHANGE TO GAME FILE ONCE CODES READY
 # game_processing = Sgf_process()
@@ -56,10 +56,4 @@ board2 = np.array([
 ])
 test3 = Sgf_Process(7, file_name="", AI_reference=board)
 print(test3.update_game_arr("B7", Stone_type.white))
-print(board)
-
-
-with open("test_file_archives/test_file_9x9.sgf", "rb") as f:
-    game = sgf.Sgf_game.from_bytes(f.read())
-
-print("a1".upper())
+print(test3)

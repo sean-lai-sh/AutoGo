@@ -57,16 +57,18 @@ def to_color(TYPE):
 
 
 class Sgf_Process:
-    def __init__(self, size, file_name, AI_reference):
+    def __init__(self, size, file_name, AI_reference, board=None):
         # Init Output file that Sabaki can later open
         self.file_out_name = file_name
         self.size = size
         # Init Game
         self.game = sgf.Sgf_game(size=self.size)
         # self.game = AI_reference
-        # self.game_arr = np.zeros((self.size, self.size))
-        self.board = AI_reference
-        # self.board = AI_reference
+        b = None
+        if board is None:
+            b = np.zeros((self.size, self.size))
+        self.board = b
+        self.ai = AI_reference
         self.checked_lst = []
 
     def update_game_arr(self, gtp_vertex, TYPE: Stone_type):
@@ -81,8 +83,8 @@ class Sgf_Process:
         print("Checking indices:", to_check)
         for t_coord in to_check:
             if self.isValid(t_coord) and self.board[t_coord[0]][t_coord[1]] == -TYPE:
-                data = self.std_remove(-TYPE, t_coord)[1]
-                 # print("Data:", data)
+                data = self.remove_stone_path(-TYPE, t_coord)[1]
+                # print("Data:", data)
                 if len(final_lst) > 0:
                     final_lst.extend(data)
                 else:
@@ -100,18 +102,26 @@ class Sgf_Process:
     def isValid(self, coord):
         return (-1 < coord[0] < self.size) and (-1 < coord[1] < self.size)
 
-    def remove_stone_path(self, array, sgf):
-        """
-        :param array:
-        :param sgf:
-        :return: linked list or ordered list of paths to remove stones from current location of removing stone tool
-        """
-
-    def std_remove(self, color: Stone_type, coords):
+    def remove_stone_path(self, color: Stone_type, coords):
         return self.remove(color, coords, std_check(coords))
 
+    def __repr__(self):
+        def convert_gtp_to_output(value):
+            if value == 0:
+                return "*"
+            elif value == 1:
+                return "B"
+            else:
+                return "W"
+        # Some amalgamation of list comprehensions and
+        # function abstraction to enable the most cursed repr function
+        return "".join(
+            ["".join([convert_gtp_to_output(self.board[i, k])
+                      for k in range(len(self.board[0]))]) + "\n" for i in
+             range(len(self.board))])
+
     def remove(self, color: Stone_type, s_coord, to_check):
-        def prev_dup( to_check, checked):
+        def prev_dup(to_check, checked):
             k = 0
             l_n_c = len(to_check)
             to_re = to_check.copy()
@@ -126,6 +136,7 @@ class Sgf_Process:
                 if not was_found:
                     k += 1
             return to_re
+
         self.checked_lst.append(s_coord)
         check_sum = len(to_check)
         final_lst = []
@@ -155,7 +166,6 @@ class Sgf_Process:
 
     def move_stone_path(self, array, file):
         pass
-
 
     def add_to_sgf(self, move_data):
         node = self.game.extend_main_sequence()
