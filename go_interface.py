@@ -1,7 +1,8 @@
 """
 Import Statements
 """
-from go_processing import Sgf_Process, GTPFacade, from_gtp, text_to_gtp
+import gtp.gtp
+from go_processing import Sgf_Process, GTPSubprocess, from_gtp, text_to_gtp
 from lcd import lcd_visuals
 from gtp import gtp
 from motor import motors
@@ -44,8 +45,8 @@ def init_ai(LCD):
     else:
         AI_settings = values.gen_gnugo_preset()  # Use our preset values to save time for comission testing
         AI_settings.append(level_setting)
-    AI = GTPFacade("white",
-                   AI_settings)  # Set it to white. Future versions need to implement player choosing starting sides
+    AI = GTPSubprocess("white",
+                       AI_settings)  # Set it to white. Future versions need to implement player choosing starting sides
     AI.boardsize(9)  # Set boardsize to a 9x9 square. Change function if board used is a bigger one
     AI.komi(6.5)  # Default komi behavior
     AI.clear_board()  # Ensure previous
@@ -103,7 +104,23 @@ def game_logic(game_input, board: Sgf_Process, motor: motors):
         print("Removing: ", str(len(remove_lst)), "Nodes from board")
         motor.multi_move(remove_lst)  # remove all the stones from the move
 
+def gLCL(move, board):
+    global first_pass, end_game
+    remove_lst = []
 
+    if move == gtp.PASS:  # Did they pass
+        if first_pass:
+            end_game = True
+        else:
+            first_pass = True
+    else:
+       #  motor.move(game_input)  # move to the space
+        print("Putting Stone", move)
+        remove_lst = board.update_game_arr(move, gtp.BLACK)
+        first_pass = False
+    if len(remove_lst) > 0:
+        print("Removing: ", str(len(remove_lst)), "Nodes from board")
+        # motor.multi_move(remove_lst)  # remove all the stones from the move
 def start_player_vs_ai():
     # Query Input for mode
     global end_game, first_pass

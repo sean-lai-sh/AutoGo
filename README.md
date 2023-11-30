@@ -6,15 +6,22 @@ An automatic go board to allow people to interact with
 - ### $100 credit with materials only from Amazon Prime
 
 
-## Credits/ Packages Used:
+## Packages Used:
+Language Versions:
+- Coded on Python 3.11
+- NodeJS
 
-Install Dependencies
-````
+Install Python Dependencies
+````commandline
 pip3 install numpy
 pip3 install sgfmill
 pip3 install pyserial
 pip3 install pexpect
 pip3 install pandas
+````
+Install Node Dependencies:
+````commandline
+npm -i
 ````
 
 # Documentation:

@@ -1,69 +1,56 @@
-import os
-from ast import Bytes
-from subprocess import Popen, PIPE
+import pexpect.popen_spawn as pex
 from gtp import gtp
 
-# Code is a fork from Jtauber gtp modules
-class GTPSubProcess(object):
-    def __init__(self, label, args):
-        self.label = label
-        self.subprocess = Popen(args, stdin=PIPE, stdout=PIPE)
-        print("{} subprocess created".format(label))
+
+def sendcommand(gtp_instance, command: str, args, expect_str="="):
+    if args is None:
+        send_str = command  # Used for certain commands like clearboard with no args
+    else:
+        send_str = command + " " + args  # Used for most commands
+    print("Send_str:", send_str)
+    gtp_instance.send(send_str)  # Send it to the subprocess
+    gtp_instance.expect(expect_str)  # Let us know when subprocess has completed
 
 
-    def send(self, data):
-        print("sending {}: {}".format(self.label, data))
-        (data, err) = self.subprocess.communicate(input = data.encode("utf-8"))
-        print("got: {}".format(data))
-        return data
-    def poll(self):
-        return self.subprocess.poll()
-    def close(self):
-        print("quitting {} subprocess".format(self.label))
-        self.subprocess.communicate("quit\n")
+def boardsize(gtp_instance, boardsize):
+    # Error Checking
+    if not isinstance(boardsize, int):
+        raise Exception("Invalid response")
+    elif boardsize < 0 or boardsize > 19:
+        return Exception("Invalid range: boardsize should be 1-19 and an integer")
+    sendcommand(gtp_instance, "boardsize", str(boardsize))
 
 
-class GTPFacade(object):
+def komi(gtp_instance, komi):
+    if not komi.isdigit():
+        raise Exception("Invalid input")
+    sendcommand(gtp_instance, "komi", komi)
 
-    def __init__(self, label, args):
-        self.label = label
-        self.gtp_subprocess = GTPSubProcess(label, args)
 
-    def name(self):
-        self.gtp_subprocess.send("name\n")
+def clear_board(gtp_i):
+    sendcommand(gtp_i, "clear_board", None)
 
-    def version(self):
-        self.gtp_subprocess.send("version\n")
 
-    def boardsize(self, boardsize):
-        self.gtp_subprocess.send("boardsize {}\n".format(boardsize))
+def genmove(gtp_i, color):
+    sendcommand(gtp_i, "genmove", color, expect_str="[A-Z]\d+")
+    return gtp_i.after  # Get the coordinates identified through regex
 
-    def komi(self, komi):
-        self.gtp_subprocess.send("komi {}\n".format(komi))
 
-    def clear_board(self):
-        self.gtp_subprocess.send("clear_board\n")
+def showboard(gtp_i):
+    sendcommand(gtp_i, "showboard", None)
 
-    def genmove(self, color):
-        message = self.gtp_subprocess.send(
-            "genmove {}\n".format(gtp.gtp_color(color)))
-        assert message[0] == "="
-        return gtp.parse_vertex(message[1:].strip())
 
-    def showboard(self):
-        self.gtp_subprocess.send("showboard\n")
+def play(gtp_instance, color, vertex):
+    sendcommand(gtp_instance, "play " + color, vertex)
 
-    def play(self, color, vertex):
-        self.gtp_subprocess.send("play {}\n".format(gtp.gtp_move(color, vertex)))
 
-    def final_score(self):
-        self.gtp_subprocess.send("final_score\n")
+def final_score(gtp_instance):
+    sendcommand(gtp_instance, "finalscore", None)
 
-    def close(self):
-        self.gtp_subprocess.close()
 
-    def poll(self):
-        return self.gtp_subprocess.poll()
+def close(gtp_instance):
+    sendcommand(gtp_instance, "sendeof", None)
+
 # GNUGO = ["gnugo", "--mode", "gtp"]
 # GNUGO_LEVEL_ONE = ["gnugo.exe", "--mode", "gtp", "--level", "1"]
 # GNUGO_MONTE_CARLO = ["gnugo.exe", "--mode", "gtp", "--monte-carlo"]

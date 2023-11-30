@@ -57,13 +57,31 @@
 # test3 = Sgf_Process(7, file_name="", AI_reference=board)
 # print(test3.update_game_arr("B7", Stone_type.white))
 # print(test3)
-import pexpect.popen_spawn as ps
+import pexpect.popen_spawn as pex
 import sys
+from go_processing import *
 
-game = ps.PopenSpawn("gnugo --mode gtp", encoding='utf-8')
-game.sendline("1 boardsize 9")
-game.expect('=1') # Tells us when command is stopped/ processed
-print(game.after) # Returns the data the expect was given or matched
-game.sendline("showboard") # Write the code as if it was correct
-game.expect("=")
+game = pex.PopenSpawn("gnugo --mode gtp", encoding='utf-8')
+game.sendline("boardsize 9")
+game.sendline("clear_board")
+game.expect('=') # Tells us when command is stopped/ processed
+color = input("Pick black or white")
+if color == "black":
+    AI_color = "white"
+else:
+    AI_color = "black"
+while True:
+    game.sendline("genmove " + color) # Write the code as if it was correct
+    game.expect("[A-Z]\d+")
+    print(game.after)
+    Coord = input("Input")
+    game.sendline("play white " + Coord)
+    game.expect("=")
+    game.sendline("showboard")
+    game.expect("[.{3,9}\n]+")
+    print(game.after)
+
+
 print(game.after)
+
+
