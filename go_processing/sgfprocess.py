@@ -1,12 +1,7 @@
 import numpy as np
 from sgfmill import sgf
-from enum import IntEnum
+import gtp
 
-
-class Stone_type(IntEnum):
-    black = 1
-    white = -1
-    empty = 0
 
 
 def gtp_to_sgf(vertex, board_size):
@@ -24,7 +19,7 @@ def text_to_gtp(coord_str):
 
 def from_gtp(gtpc, bs):
     """Converts from a GTP coordinate to a Minigo coordinate."""
-    gtpc = gtpc.upper()
+    print(isinstance(gtpc, str))
     if gtpc == 'PASS':
         return None
     col = _GTP_COLUMNS.index(gtpc[0])
@@ -48,9 +43,9 @@ def std_check(coord):
     tc = np.array([[x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]])
     return tc
 
-
+print(from_gtp("A2",9))
 def to_color(TYPE):
-    if TYPE == Stone_type.black:
+    if TYPE == gtp.BLACK:
         return 'b'
     else:
         return 'w'
@@ -67,12 +62,17 @@ class Sgf_Process:
         b = None
         if board is None:
             b = np.zeros((self.size, self.size))
+        else:
+            b = board
         self.board = b
         self.ai = AI_reference
         self.checked_lst = []
+        self.fp, self.eg = False, False
 
-    def update_game_arr(self, gtp_vertex, TYPE: Stone_type):
+    def update_game_arr(self, gtp_vertex, TYPE):
         # ASSUMES THAT TYPE IS BLACK OR WHITE VALUED AS 1 or -1 RESPECTIVELY
+
+        x = "a"
         coordinate = from_gtp(gtp_vertex, self.size)
         print(coordinate)
         # gtp -> minigo, i.e row col format
@@ -96,23 +96,23 @@ class Sgf_Process:
         self.add_to_sgf([sgf_color, coordinate, None])
         for k in final_lst:
             x, y = k[0], k[1]
-            self.board[x][y] = Stone_type.empty
+            self.board[x][y] = gtp.EMPTY
         return final_lst
 
     def isValid(self, coord):
         return (-1 < coord[0] < self.size) and (-1 < coord[1] < self.size)
 
-    def remove_stone_path(self, color: Stone_type, coords):
+    def remove_stone_path(self, color: gtp, coords):
         return self.remove(color, coords, std_check(coords))
 
     def __repr__(self):
         def convert_gtp_to_output(value):
             if value == 0:
-                return "*"
+                return " . "
             elif value == 1:
-                return "B"
+                return " B "
             else:
-                return "W"
+                return " W "
         # Some amalgamation of list comprehensions and
         # function abstraction to enable the most cursed repr function
         return "".join(
@@ -120,7 +120,7 @@ class Sgf_Process:
                       for k in range(len(self.board[0]))]) + "\n" for i in
              range(len(self.board))])
 
-    def remove(self, color: Stone_type, s_coord, to_check):
+    def remove(self, color: gtp, s_coord, to_check):
         def prev_dup(to_check, checked):
             k = 0
             l_n_c = len(to_check)
@@ -184,3 +184,4 @@ class Sgf_Process:
             return True
         except FileNotFoundError:
             return False
+
