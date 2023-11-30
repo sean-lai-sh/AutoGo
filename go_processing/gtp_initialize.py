@@ -1,3 +1,5 @@
+import os
+from ast import Bytes
 from subprocess import Popen, PIPE
 from gtp import gtp
 
@@ -11,16 +13,11 @@ class GTPSubProcess(object):
 
     def send(self, data):
         print("sending {}: {}".format(self.label, data))
-        self.subprocess.stdin.write(data)
-        result = ""
-        while True:
-            data = self.subprocess.stdout.readline()
-            if not data.strip():
-                break
-            result += data
-        print("got: {}".format(result))
-        return result
-
+        (data, err) = self.subprocess.communicate(input = data.encode("utf-8"))
+        print("got: {}".format(data))
+        return data
+    def poll(self):
+        return self.subprocess.poll()
     def close(self):
         print("quitting {} subprocess".format(self.label))
         self.subprocess.communicate("quit\n")
@@ -65,25 +62,22 @@ class GTPFacade(object):
     def close(self):
         self.gtp_subprocess.close()
 
-
-GNUGO = ["gnugo", "--mode", "gtp"]
-GNUGO_LEVEL_ONE = ["gnugo", "--mode", "gtp", "--level", "1"]
-GNUGO_MONTE_CARLO = ["gnugo", "--mode", "gtp", "--monte-carlo"]
-
-
-
+    def poll(self):
+        return self.gtp_subprocess.poll()
+# GNUGO = ["gnugo", "--mode", "gtp"]
+# GNUGO_LEVEL_ONE = ["gnugo.exe", "--mode", "gtp", "--level", "1"]
+# GNUGO_MONTE_CARLO = ["gnugo.exe", "--mode", "gtp", "--monte-carlo"]
+#
+#
+#
+#
 # black = GTPFacade("black", GNUGO)
-# white = GTPFacade("white", GNUGO_LEVEL_ONE)
+# white = GTPFacade("white", GNUGO)
 #
-# black.name()
-# black.version()
-#
-# white.name()
-# white.version()
 #
 # black.boardsize(9)
 # white.boardsize(9)
-#
+
 # black.komi(5.5)
 # white.komi(5.5)
 #
@@ -91,7 +85,7 @@ GNUGO_MONTE_CARLO = ["gnugo", "--mode", "gtp", "--monte-carlo"]
 # white.clear_board()
 #
 # first_pass = False
-#
+# print("Works")
 # while True:
 #     vertex = black.genmove(gtp.BLACK)
 #     if vertex == gtp.PASS:

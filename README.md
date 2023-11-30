@@ -8,13 +8,13 @@ An automatic go board to allow people to interact with
 
 ## Credits/ Packages Used:
 
-gtp: JTauber (used manual forking as pip installed faulty version)
-
 Install Dependencies
 ````
 pip3 install numpy
 pip3 install sgfmill
 pip3 install pyserial
+pip3 install pexpect
+pip3 install pandas
 ````
 
 # Documentation:

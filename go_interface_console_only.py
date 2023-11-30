@@ -2,7 +2,6 @@
 Import Statements
 """
 from go_processing import Sgf_Process, GTPFacade, from_gtp, text_to_gtp
-from lcd import lcd_visuals
 from gtp import gtp
 from motor import motors
 import os
@@ -30,7 +29,7 @@ def generate_valid_file_path():
 def get_setting():
     val = 0
     val = input("Input level of AI (1-12)")
-    while not (isinstance(val, int) and 1 <= int(val) <= 12):
+    while not val.isdigit() and 1 <= int(val) <= 12:
         print("ERROR: Invalid input please type a number from 1 - 12")
         val = input("Input level of AI (1-12)")
     if val == 12:
@@ -39,7 +38,7 @@ def get_setting():
 
 
 def init_ai():
-    level_setting = get_setting()  # Query Input for other settings I.e Komi & what not
+    level_setting = get_setting()  # Query Input for other settings I.e. Komi & what not
     AI_settings = ""
     if level_setting == "LZBT":
         AI_settings = values.gen_leelazero_preset()
@@ -51,6 +50,11 @@ def init_ai():
     AI = GTPFacade("white",
                    AI_settings)  # Set it to white. Future versions need to implement player choosing starting sides
     AI.boardsize(9)  # Set boardsize to a 9x9 square. Change function if board used is a bigger one
+    w = AI.poll()
+    while w is None:
+        time.sleep(0.01)
+        print(w)
+        w = AI.poll()
     AI.komi(6.5)  # Default komi behavior
     AI.clear_board()  # Ensure previous
     return AI
@@ -108,13 +112,17 @@ def game_logic(game_input, board: Sgf_Process, motor: motors):
 def start_player_vs_ai():
     # Query Input for mode
     global end_game, first_pass
-    LCD = lcd_visuals()
     # Init GnuGo
     AI = init_ai()
+    print("AI has been successfully created. Creating game")
     motorSys = motors()
+    print("Motor system active")
     f_name = generate_valid_file_path()
+    print("This game will be made to be accessed with Sabaki at the file path, ", f_name)
     game_board = Sgf_Process(9, f_name, AI)
+    print("Initialized game board representation. Starting game. Good Luck Player!")
     end_game, first_pass = False, False
+    print(game_board)
     while end_game is False:
         vertex = get_vertex()  # TO Implement
         game_logic(vertex, game_board, motorSys)  # Process input regarding game state, update Sgf
@@ -126,7 +134,7 @@ def start_player_vs_ai():
         AI.showboard()  # Display via Ascii for debugging
         vertex = AI.genmove(gtp.WHITE)  # Generate a move
         coordinate_out = ", ".join(from_gtp(vertex, 9))  # Get string of display coord to row col
-        LCD.set_input("AI Plays at", coordinate_out)  # Print it out through LCD
+        print("AI Plays at", coordinate_out)  # Print it out through LCD
         game_logic(vertex, game_board, motorSys)  # Process input for AI
         time.sleep(Sleep_Constant)  # Sleep if needed
 
@@ -138,3 +146,5 @@ def start_player_vs_ai():
     # Start Game
     # End game when needed
     return final_score
+
+start_player_vs_ai()

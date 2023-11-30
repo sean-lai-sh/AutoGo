@@ -6,8 +6,8 @@ class Motors:
     def __init__(self, start_pos = None, size = 9):
         self.start_pos = start_pos
         self.board_size = size
-        self.ser = serial.Serial('/dev/ttyACM0', 9600)
-        self.ser.reset_input_buffer()
+        # self.ser = serial.Serial('/dev/ttyACM0', 9600)
+        # self.ser.reset_input_buffer()
 
     def get_user_input(self):
         res = input()
