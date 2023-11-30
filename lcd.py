@@ -77,7 +77,6 @@ class lcd_visuals:
 
     def __init__(self):
         lcd_init()
-        self.output = True
         self.first_line = ""
         self.second_line = ""
 

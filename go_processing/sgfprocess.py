@@ -43,7 +43,7 @@ def std_check(coord):
     tc = np.array([[x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]])
     return tc
 
-print(from_gtp("A2",9))
+# print(from_gtp("A2",9))
 def to_color(TYPE):
     if TYPE == gtp.BLACK:
         return 'b'
@@ -151,7 +151,7 @@ class Sgf_Process:
             elif self.board[x][y] == color:
                 new_check = std_check(coord)
                 next_check = prev_dup(new_check, self.checked_lst)
-                print(self.checked_lst)
+                # print(self.checked_lst)
                 next_s = self.remove(color, [x, y], next_check)
                 # print(next_s)
                 check_sum += next_s[0]
@@ -163,9 +163,6 @@ class Sgf_Process:
             return -1, final_lst
         else:
             return 0, final_lst
-
-    def move_stone_path(self, array, file):
-        pass
 
     def add_to_sgf(self, move_data):
         node = self.game.extend_main_sequence()
