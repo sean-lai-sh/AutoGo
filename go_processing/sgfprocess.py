@@ -132,7 +132,7 @@ class Sgf_Process:
     def remove(self, color: gtp, s_coord, to_check):
         def prev_dup(checking, checked):
             k = 0
-            l_n_c = len(checking)
+            l_n_c = len(checking) # Length of Node Checking
             to_re = to_check.copy()
             while k < l_n_c:
                 was_found = False
