@@ -1,45 +1,21 @@
 import numpy as np
 import serial
 import time
+import gtp
 from go_processing import from_gtp
 class Motors:
 
-    def __init__(self, start_pos = None, size = 9):
-        self.start_pos = start_pos
-        self.board_size = size
+    def __init__(self, game_processor, ai_color, player_color, board_size = 9, start_pos = (0,0)):
+        self.current_pos = start_pos
+        self.board_size = board_size
         # self.ser = serial.Serial('/dev/ttyACM0', 9600)
         # self.ser.reset_input_buffer()
+
         self.game_state = np.zeros((self.board_size + 1,self.board_size + 1))
+        self.piece_start = (10, 10)
+        self.black_cap = (0, 10)
+        self.white_cap = (10, 0)
 
-    def get_user_input(self):
-        res = input()
-        return res    
-
-    def create_path(self, end_pos):
-        start_pos = self.start_pos
-        path = []
-        move = from_gtp(end_pos, self.board_size)
-        moveX = move[0]
-        moveY = move[1]
-        while moveX < 0:
-            path.append("U")
-            moveX += 1
-        while moveX > 0:
-            path.append("D")
-            moveX -= 1
-
-        while moveY < 0:
-            path.append("L")
-            moveY += 1
-        while moveY > 0:
-            path.append("R")
-            moveY -= 1
-        return path
-
-    def move(self, end_pos):
-        p = self.create_path(end_pos)
-        self.move_along_path(p)
-        return 1
     def send_motor_instruction(self, direction):
         self.ser.reset_input_buffer()
         input_str = bytes(direction + "\n")
@@ -50,13 +26,6 @@ class Motors:
 
     def close(self):
         self.ser.close()
-    def move_along_path(self, path):
-        for move in path:
-            self.send_motor_instruction(move)
-
-    def multi_move(self, lst_moves):
-        # To be implemented @il.ydna
-        pass
 
     class Node():
         """A node class for A* Pathfinding"""
@@ -76,9 +45,9 @@ class Motors:
         """Returns a list of tuples as a path from the given start to the given end in the given maze"""
 
         # Create start and end node
-        start_node = motors.Node(None, start)
+        start_node = Motors.Node(None, start)
         start_node.g = start_node.h = start_node.f = 0
-        end_node = motors.Node(None, end)
+        end_node = Motors.Node(None, end)
         end_node.g = end_node.h = end_node.f = 0
 
         # Initialize both open and closed list
@@ -130,7 +99,7 @@ class Motors:
                     continue
 
                 # Create new node
-                new_node = motors.Node(current_node, node_position)
+                new_node = Motors.Node(current_node, node_position)
 
                 # Append
                 children.append(new_node)
@@ -157,6 +126,57 @@ class Motors:
                 # Add the child to the open list
                 open_list.append(child)
 
+    def translate_astar(self, astar_lst):
+        res_lst = []
+        for move in astar_lst:
+            if move == (1, 0):
+                res_lst.append("R")
+            if move == (-1, 0):
+                res_lst.append("L")
+            if move == (0, 1):
+                res_lst.append("U")
+            if move == (0, -1):
+                res_lst.append("D")
+        return res_lst
 
-motors = Motors("A1")
-print(motors.create_path("C9"))
+    def move_through_list(self, lst):
+        for step in lst:
+            self.send_motor_instruction(step)
+
+    def pickup(self, end_pos):
+        #TODO: magnet off
+        move_lst = self.translate_astar(self.astar(self.game_state, self.current_pos, self.piece_start))
+        self.move_through_list(move_lst)
+        #TODO: magnet on
+        self.current_pos = self.piece_start
+        move_lst = self.translate_astar(self.astar(self.game_state, self.current_pos, end_pos))
+        self.move_through_list(move_lst)
+        #TODO: magnet off
+
+
+    def dropoff(self, start_pos, color):
+        if color == gtp.BLACK:
+            end_pos = self.black_cap
+        else:
+            end_pos = self.white_cap
+        #TODO: magnet off
+        move_lst = self.translate_astar(self.astar(self.game_state, self.current_pos, start_pos))
+        self.current_pos = start_pos
+        self.move_through_list(move_lst)
+        # TODO: magnet on
+        move_lst = self.translate_astar(self.astar(self.game_state, self.current_pos, end_pos))
+        self.current_pos = end_pos
+        # TODO: magnet off
+
+
+    def move(self, end_pos, move_color):
+        self.pickup(end_pos)
+    def multi_move(self, lst_moves, move_color):
+        for moves in lst_moves:
+            self.dropoff(moves, move_color)
+
+
+
+
+
+
