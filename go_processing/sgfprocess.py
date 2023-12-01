@@ -3,7 +3,6 @@ from sgfmill import sgf
 import gtp
 
 
-
 def gtp_to_sgf(vertex, board_size):
     init_conv = from_gtp(vertex, board_size)
     to_conv = to_sgf(init_conv)
@@ -12,14 +11,14 @@ def gtp_to_sgf(vertex, board_size):
 
 def text_to_gtp(coord_str):
     letter_val = coord_str[0].upper()
-    if letter_val == "I":
-        letter_val = "J"
+    if ord(letter_val) - ord("J") >= 0:
+        letter_val = chr(ord(letter_val) - 1)
     return letter_val + coord_str[1:]
 
 
 def from_gtp(gtpc, bs):
     """Converts from a GTP coordinate to a Minigo coordinate."""
-    print(isinstance(gtpc, str))
+    # print(isinstance(gtpc, str))
     if gtpc == 'PASS':
         return None
     col = _GTP_COLUMNS.index(gtpc[0])
@@ -43,6 +42,7 @@ def std_check(coord):
     tc = np.array([[x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]])
     return tc
 
+
 # print(from_gtp("A2",9))
 def to_color(TYPE):
     if TYPE == gtp.BLACK:
@@ -53,9 +53,16 @@ def to_color(TYPE):
 
 class Sgf_Process:
     def __init__(self, size, file_name, AI_reference, board=None):
+        def print_col_names(value):
+            if ord(value) - ord("J") >= 0:
+                return " " + chr(ord(value) - 1) + " "
+            else:
+                return " " + value + " "
+
         # Init Output file that Sabaki can later open
         self.file_out_name = file_name
         self.size = size
+        self.top = " " + "".join([print_col_names(_GTP_COLUMNS[val]) for val in range(self.size)])
         # Init Game
         self.game = sgf.Sgf_game(size=self.size)
         # self.game = AI_reference
@@ -113,22 +120,24 @@ class Sgf_Process:
                 return " B "
             else:
                 return " W "
+
         # Some amalgamation of list comprehensions and
         # function abstraction to enable the most cursed repr function
-        return "".join(
-            ["".join([convert_gtp_to_output(self.board[i, k])
-                      for k in range(len(self.board[0]))]) + "\n" for i in
+        grid = "\n".join(
+            [str(self.size - i) + "".join([convert_gtp_to_output(self.board[i, k])
+                                   for k in range(len(self.board[0]))]) + "{}".format(self.size - i) for i in
              range(len(self.board))])
+        return "\n".join([self.top, grid, self.top])
 
     def remove(self, color: gtp, s_coord, to_check):
-        def prev_dup(to_check, checked):
+        def prev_dup(checking, checked):
             k = 0
-            l_n_c = len(to_check)
+            l_n_c = len(checking)
             to_re = to_check.copy()
             while k < l_n_c:
                 was_found = False
-                for s_coord in checked:
-                    if np.array_equal(to_re[k], s_coord):
+                for t_coord in checked:
+                    if np.array_equal(to_re[k], t_coord):
                         to_re = np.delete(to_re, k, 0)
                         l_n_c -= 1
                         was_found = True
@@ -181,4 +190,3 @@ class Sgf_Process:
             return True
         except FileNotFoundError:
             return False
-

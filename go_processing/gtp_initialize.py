@@ -1,8 +1,10 @@
 import pexpect.popen_spawn as pex
+# TODO SWAP TO pexpect
 
 
 
-def sendcommand(gtp_instance: pex.PopenSpawn, command: str, args, expect_str="="):
+def sendcommand(gtp_instance:pex.PopenSpawn, command: str, args, expect_str="="):
+    # TODO SWAP TO pex.spawn when porting to unix
     if args is None:
         send_str = command  # Used for certain commands like clearboard with no args
     else:
