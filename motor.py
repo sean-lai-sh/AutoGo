@@ -8,19 +8,17 @@ class Motors:
     def __init__(self, game_processor, ai_color, player_color, board_size = 9, start_pos = (0,0)):
         self.current_pos = start_pos
         self.board_size = board_size
-        # self.ser = serial.Serial('/dev/ttyACM0', 9600)
-        # self.ser.reset_input_buffer()
+        self.ser = serial.Serial('/dev/ttyACM1', 9600)
+        self.ser.reset_input_buffer()
 
         self.game_state = np.zeros((self.board_size + 1,self.board_size + 1))
-        self.piece_start = (10, 10)
-        self.black_cap = (0, 10)
-        self.white_cap = (10, 0)
+        self.piece_start = (9, 9)
+        self.black_cap = (0, 9)
+        self.white_cap = (9, 0)
 
     def send_motor_instruction(self, direction):
-        self.ser.reset_input_buffer()
-        input_str = bytes(direction + "\n")
-        self.ser.write(input_str)
-        line = self.ser.readline().decode('utf-8').rstrip()
+        ser.write(direction.encode('utf-8'))
+        line = ser.readline().decode('utf-8').rstrip()
         print(line)
         time.sleep(1)
 
@@ -43,7 +41,7 @@ class Motors:
 
     def astar(self, maze, start, end):
         """Returns a list of tuples as a path from the given start to the given end in the given maze"""
-
+        #print(maze)
         # Create start and end node
         start_node = Motors.Node(None, start)
         start_node.g = start_node.h = start_node.f = 0
@@ -102,6 +100,7 @@ class Motors:
                 new_node = Motors.Node(current_node, node_position)
 
                 # Append
+                #print(new_node.position)
                 children.append(new_node)
 
             # Loop through children
@@ -125,18 +124,18 @@ class Motors:
 
                 # Add the child to the open list
                 open_list.append(child)
-
+        print("astar done")
     def translate_astar(self, astar_lst):
         res_lst = []
         for move in astar_lst:
             if move == (1, 0):
-                res_lst.append("R")
+                res_lst.append("R.")
             if move == (-1, 0):
-                res_lst.append("L")
+                res_lst.append("L.")
             if move == (0, 1):
-                res_lst.append("U")
+                res_lst.append("U.")
             if move == (0, -1):
-                res_lst.append("D")
+                res_lst.append("D.")
         return res_lst
 
     def move_through_list(self, lst):
@@ -145,7 +144,11 @@ class Motors:
 
     def pickup(self, end_pos):
         #TODO: magnet off
-        move_lst = self.translate_astar(self.astar(self.game_state, self.current_pos, self.piece_start))
+        print("reached pickup call")
+        move_lst = self.astar(self.game_state, self.current_pos, self.piece_start)
+        print(move_lst)
+        move_lst = self.translate_astar(move_lst)
+        print(move_lst)
         self.move_through_list(move_lst)
         #TODO: magnet on
         self.current_pos = self.piece_start

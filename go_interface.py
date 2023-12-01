@@ -5,7 +5,7 @@ import gtp.gtp
 from go_processing import *
 from lcd import lcd_visuals
 from gtp import gtp
-from motor import motors
+from motor import Motors
 import os
 import random
 import string
@@ -104,8 +104,8 @@ def gLCL(vertex, board, stone_type, motor):
         else:
             board.fp = True
     else:
+        print("Putting Stone", from_gtp(vertex, board.size), stone_type)
         motor.move(from_gtp(vertex, board.size), stone_type)  # move to the space
-        print("Putting Stone", vertex)
         remove_lst = board.update_game_arr(vertex, stone_type)
         board.fp = False
     if len(remove_lst) > 0:
@@ -141,7 +141,7 @@ def main():
     else:
         AI_col = gtp.BLACK
         command = "genmove black"
-    motor = motors(game_processor, AI_col, Player_Color)
+    motor = Motors(game_processor, AI_col, Player_Color)
     while game_processor.eg is False:
         if Player_Color == "black":
             print(game_processor)
