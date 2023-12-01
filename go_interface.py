@@ -9,7 +9,7 @@ from motor import motors
 import os
 import random
 import string
-import pexpect.popen_spawn as pex #TODO CHANGE TO pexpect WHEN PULLED TO LINUX
+import pexpect.popen_spawn as pex  # TODO CHANGE TO pexpect WHEN PULLED TO LINUX
 import values
 
 Sleep_Constant = values.SLEEP_CONST
@@ -37,10 +37,11 @@ def get_setting(visual: lcd_visuals):
         return "LZBT"
     return str(val)
 
+
 def get_color(visual: lcd_visuals):
     val = ""
     visual.set_input("Color?", "'B' or 'W': " + val)
-    while not (val == 'B' or val =='W'):
+    while not (val == 'B' or val == 'W'):
         visual.output()
 
         val = input("B or W")
@@ -54,6 +55,7 @@ def get_color(visual: lcd_visuals):
         visual.set_input("You are White", "Good Luck!")
     visual.output()
     return str(val)
+
 
 def get_vertex(visuals, board):
     all_char = "ABCDEFGHIJKMNOPQRSTUVWXYZ"
@@ -93,19 +95,20 @@ else
 2. Update our Sgf_Process object game state 
 3. Remove any stone(s) from our initial move
 """
-def gLCL(move, board, stone_type, motor):
 
+
+def gLCL(vertex, board, stone_type, motor):
     remove_lst = []
 
-    if move == gtp.PASS:  # Did they pass
+    if vertex == gtp.PASS:  # Did they pass
         if board.fp:
             board.eg = True
         else:
             board.fp = True
     else:
-        motor.move(move)  # move to the space
-        print("Putting Stone", move)
-        remove_lst = board.update_game_arr(move, stone_type)
+        motor.move(from_gtp(vertex, board.size))  # move to the space
+        print("Putting Stone", vertex)
+        remove_lst = board.update_game_arr(vertex, stone_type)
         board.fp = False
     if len(remove_lst) > 0:
         print("Removing: ", str(len(remove_lst)), "Nodes from board")

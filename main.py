@@ -11,15 +11,16 @@
 # # game_board, plays = sgf_moves.get_setup_and_moves(game)
 # # print(ascii_boards.render_board(game_board))
 #
-# def vertex_to_idx(vertex):
-#     Str_val = vertex[0].lower()
-#     int_val = "".join(vertex[1:])
-#     row = chr(97 + int(int_val))
-#     col = Str_val
-#     return col + row
-#
-#
-# print(vertex_to_idx("A19"))
+from go_processing import *
+def vertex_to_idx(vertex):
+    Str_val = vertex[0].lower()
+    int_val = "".join(vertex[1:])
+    row = chr(97 + int(int_val))
+    col = Str_val
+    return col + row
+
+
+print(from_gtp("A19", 19))
 #
 ### Writing a game file: upon input
 import pexpect.popen_spawn as pex
