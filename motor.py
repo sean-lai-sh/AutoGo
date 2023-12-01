@@ -8,7 +8,7 @@ class Motors:
     def __init__(self, game_processor, ai_color, player_color, board_size = 9, start_pos = (0,0)):
         self.current_pos = start_pos
         self.board_size = board_size
-        self.ser = serial.Serial('/dev/ttyACM1', 9600)
+        self.ser = serial.Serial('/dev/ttyACM0', 9600)
         self.ser.reset_input_buffer()
 
         self.game_state = np.zeros((self.board_size + 1,self.board_size + 1))
@@ -17,10 +17,10 @@ class Motors:
         self.white_cap = (9, 0)
 
     def send_motor_instruction(self, direction):
-        ser.write(direction.encode('utf-8'))
-        line = ser.readline().decode('utf-8').rstrip()
+        self.ser.write(direction.encode('utf-8'))
+        line = self.ser.readline().decode('utf-8').rstrip()
         print(line)
-        time.sleep(1)
+        time.sleep(.5)
 
     def close(self):
         self.ser.close()
@@ -81,8 +81,7 @@ class Motors:
 
             # Generate children
             children = []
-            for new_position in [(0, -1), (0, 1), (-1, 0), (1, 0), (-1, -1), (-1, 1), (1, -1),
-                                 (1, 1)]:  # Adjacent squares
+            for new_position in [(0, -1), (0, 1), (-1, 0), (1, 0)]:  # Adjacent squares
 
                 # Get node position
                 node_position = (current_node.position[0] + new_position[0], current_node.position[1] + new_position[1])
@@ -100,7 +99,7 @@ class Motors:
                 new_node = Motors.Node(current_node, node_position)
 
                 # Append
-                #print(new_node.position)
+                print(new_node.position)
                 children.append(new_node)
 
             # Loop through children
@@ -127,7 +126,9 @@ class Motors:
         print("astar done")
     def translate_astar(self, astar_lst):
         res_lst = []
-        for move in astar_lst:
+        move = (0,0)
+        for i in range(1,len(astar_lst)-1):
+            move = (astar_lst[i-1][0]-astar_lst[i][0], astar_lst[i-1][1]-astar_lst[i][1])
             if move == (1, 0):
                 res_lst.append("R.")
             if move == (-1, 0):
@@ -154,6 +155,7 @@ class Motors:
         self.current_pos = self.piece_start
         move_lst = self.translate_astar(self.astar(self.game_state, self.current_pos, end_pos))
         self.move_through_list(move_lst)
+        self.current_pos = end_pos
         #TODO: magnet off
 
 
