@@ -71,7 +71,6 @@ def get_vertex(visuals, board):
             valid_input_given = True
         elif user_input[0] in valid_chars and user_input[1:].isdigit() and 1 <= int(user_input[1:]) <= board.size:
             valid_input_given = True
-
         else:
             visuals.set_input("Invalid. Type letter", "number. ex: A5")
 
@@ -105,13 +104,13 @@ def gLCL(vertex, board, stone_type, motor):
         else:
             board.fp = True
     else:
-        motor.move(from_gtp(vertex, board.size))  # move to the space
+        motor.move(from_gtp(vertex, board.size), stone_type)  # move to the space
         print("Putting Stone", vertex)
         remove_lst = board.update_game_arr(vertex, stone_type)
         board.fp = False
     if len(remove_lst) > 0:
         print("Removing: ", str(len(remove_lst)), "Nodes from board")
-        motor.multi_move(remove_lst)  # remove all the stones from the move
+        motor.multi_move(remove_lst, stone_type)  # remove all the stones from the move
 
 
 def parseScore(score):
@@ -147,7 +146,12 @@ def main():
         if Player_Color == "black":
             print(game_processor)
             vertex = get_vertex(panel, game_processor)
-            gLCL(vertex, game_processor, gtp.BLACK, motor)
+            AI.sendline("play black {}".format(vertex))
+            AI.expect("=")
+            if not (vertex == gtp.RESIGN or vertex == gtp.PASS):
+                gLCL(vertex, game_processor, gtp.BLACK, motor)
+            else:
+                break
             print(game_processor)
 
         AI.sendline(command)  # Generate Move
@@ -162,6 +166,8 @@ def main():
         if Player_Color == "white":
             print(game_processor)
             vertex = get_vertex(panel, game_processor)
+            AI.sendline("play white {}".format(vertex))
+            AI.expect("=")
             if not (vertex == "resign" or vertex ==  "pass"):
                 gLCL(vertex, game_processor, gtp.WHITE, motor)
             else:

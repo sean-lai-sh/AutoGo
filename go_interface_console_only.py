@@ -51,12 +51,15 @@ def main():
         if Player_Color == "black":
             print(game_processor)
             vertex = input(print_player_text)
+            AI.sendline("play black {}".format(vertex))
+            AI.expect("=")
             gLCL(vertex, game_processor, gtp.BLACK)
             print(game_processor)
 
         AI.sendline(command)  # Generate Move
         AI.expect("[\w]{6}|[A-Z]\d{1,2}")  # Get move
         AI_move = AI.after
+        print("AI Moved to:", AI_move)
         if AI_move == gtp.RESIGN:
             print("AI has resigned you have won")
             break
@@ -65,16 +68,17 @@ def main():
         if Player_Color == "white":
             print(game_processor)
             vertex = input(print_player_text)
+            AI.sendline("play white {}".format(vertex))
             gLCL(vertex, game_processor, gtp.WHITE)
             print(game_processor)
 
     print(game_processor)
+    print("Game Has ended")
     AI.sendline("final_score")
     AI.expect("[\w][+]\d+[.]\d")
     score = AI.after
     parseScore(score)
     game_processor.create_sgf()
-    print("Game Has ended")
     print("Please find your game at ", game_processor.file_out_name)
     print("We hope you have had an fun time with out unqiue way with playing Go!!")
     AI.sendline("quit")  # End AI Instance
