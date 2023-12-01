@@ -9,12 +9,13 @@ from motor import motors
 import os
 import random
 import string
-import pexpect.popen_spawn as pex #TODO CHANGE TO pexpect WHEN PULLED TO LINUX
+import pexpect as pex #TODO CHANGE TO pexpect WHEN PULLED TO LINUX
 import values
 
 Sleep_Constant = values.SLEEP_CONST
 
 PATH = "/"
+
 
 end_game = False  # Global Var for coroutine
 first_pass = False
@@ -28,7 +29,7 @@ def generate_valid_file_path():
     return PATH + f_name + ext_name
 
 
-def get_setting(visual: lcd_visuals):
+def get_setting(visual):
     val = 0
     visual.set_input("Input level", "of AI: 1-11")
     while not (isinstance(val, int) and 1 <= int(val) <= 12):
@@ -124,7 +125,7 @@ def parseScore(score):
 
 def main():
     # model = input("Choose, gnugo or leelazero")
-    AI = pex.PopenSpawn("gnugo --mode gtp", encoding="utf-8")
+    AI = pex.spawn("gnugo --mode gtp", encoding="utf-8")
     AI.sendline("boardsize 9")
     AI.sendline("clear_board")
     motor = motors
