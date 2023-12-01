@@ -67,9 +67,8 @@ def get_vertex(visuals, board):
     while not valid_input_given:
         visuals.output()
         user_input = input("enter your move").upper()
-        if user_input == "PASS":
+        if user_input == "pass" or user_input == "resign":
             valid_input_given = True
-
         elif user_input[0] in valid_chars and user_input[1:].isdigit() and 1 <= int(user_input[1:]) <= board.size:
             valid_input_given = True
 
@@ -130,10 +129,10 @@ def main():
     AI = pex.PopenSpawn("gnugo --mode gtp", encoding="utf-8")
     AI.sendline("boardsize 9")
     AI.sendline("clear_board")
-    motor = motors
     panel = lcd_visuals()
     f_name = ""
     game_processor = Sgf_Process(9, f_name, AI)
+
     Player_Color = get_color(panel)
     AI_col = None
     command = ""
@@ -143,7 +142,7 @@ def main():
     else:
         AI_col = gtp.BLACK
         command = "genmove black"
-
+    motor = motors(game_processor, AI_col, Player_Color)
     while game_processor.eg is False:
         if Player_Color == "black":
             print(game_processor)
@@ -163,7 +162,10 @@ def main():
         if Player_Color == "white":
             print(game_processor)
             vertex = get_vertex(panel, game_processor)
-            gLCL(vertex, game_processor, gtp.WHITE, motor)
+            if not (vertex == "resign" or vertex ==  "pass"):
+                gLCL(vertex, game_processor, gtp.WHITE, motor)
+            else:
+                break
             print(game_processor)
 
     print(game_processor)
