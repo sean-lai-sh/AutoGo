@@ -1,14 +1,11 @@
-import pexpect.popen_spawn as pex
 from go_processing import *
-import gtp
-
 print_player_text = "Please make your decision: \n -Move i.e A3 \n -Pass: 'PASS' \n -resign: 'resign' \n Your Input:"
 
 
 def gLCL(move, board, stone_type):
     remove_lst = []
 
-    if move == "PASS":  # Did they pass
+    if move == gtp.PASS:  # Did they pass
         if board.fp:
             board.eg = True
         else:
@@ -60,7 +57,7 @@ def main():
         AI.sendline(command)  # Generate Move
         AI.expect("[\w]{6}|[A-Z]\d{1,2}")  # Get move
         AI_move = AI.after
-        if AI_move == "resign":
+        if AI_move == gtp.RESIGN:
             print("AI has resigned you have won")
             break
         gLCL(AI_move, game_processor, AI_col)

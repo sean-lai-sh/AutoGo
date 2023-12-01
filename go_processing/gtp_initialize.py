@@ -1,8 +1,10 @@
 import pexpect.popen_spawn as pex
-from gtp import gtp
+# TODO SWAP TO pexpect
 
 
-def sendcommand(gtp_instance, command: str, args, expect_str="="):
+
+def sendcommand(gtp_instance:pex.PopenSpawn, command: str, args, expect_str="="):
+    # TODO SWAP TO pex.spawn when porting to unix
     if args is None:
         send_str = command  # Used for certain commands like clearboard with no args
     else:
@@ -12,13 +14,13 @@ def sendcommand(gtp_instance, command: str, args, expect_str="="):
     gtp_instance.expect(expect_str)  # Let us know when subprocess has completed
 
 
-def boardsize(gtp_instance, boardsize):
+def boardsize(gtp_instance, b_size):
     # Error Checking
-    if not isinstance(boardsize, int):
+    if not isinstance(b_size, int):
         raise Exception("Invalid response")
-    elif boardsize < 0 or boardsize > 19:
+    elif b_size < 0 or b_size > 19:
         return Exception("Invalid range: boardsize should be 1-19 and an integer")
-    sendcommand(gtp_instance, "boardsize", str(boardsize))
+    sendcommand(gtp_instance, "boardsize", str(b_size))
 
 
 def komi(gtp_instance, komi):
