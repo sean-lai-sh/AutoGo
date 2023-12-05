@@ -11,7 +11,11 @@ import random
 import string
 import pexpect.popen_spawn as pex  # TODO CHANGE TO pexpect WHEN PULLED TO LINUX
 import values
+import tkinter as tk
+from tkinter import simpledialog as sd
 
+ROOT = tk.Tk()
+ROOT.withdraw()
 Sleep_Constant = values.SLEEP_CONST
 
 PATH = "/"
@@ -44,7 +48,7 @@ def get_color(visual: lcd_visuals):
     while not (val == 'B' or val == 'W'):
         visual.output()
 
-        val = input("B or W")
+        val = sd.askstring(title = "AutoGO", prompt = "B or W")
         visual.set_input("Color?", "'B' or 'W': " + val)
 
     if val == 'B':
@@ -66,7 +70,7 @@ def get_vertex(visuals, board):
     user_input = None
     while not valid_input_given:
         visuals.output()
-        user_input = input("enter your move").upper()
+        user_input = sd.askstring(title = "AutoGO", prompt = "enter your move").upper()
         if user_input == "pass" or user_input == "resign":
             valid_input_given = True
         elif user_input[0] in valid_chars and user_input[1:].isdigit() and 1 <= int(user_input[1:]) <= board.size:
