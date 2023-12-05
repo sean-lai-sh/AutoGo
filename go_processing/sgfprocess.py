@@ -19,7 +19,7 @@ def text_to_gtp(coord_str):
 def from_gtp(gtpc, bs):
     """Converts from a GTP coordinate to a Minigo coordinate."""
     # print(isinstance(gtpc, str))
-    if gtpc == 'PASS':
+    if gtpc == "PASS":
         return None
     col = _GTP_COLUMNS.index(gtpc[0])
     row_from_bottom = int(gtpc[1:])
@@ -29,12 +29,12 @@ def from_gtp(gtpc, bs):
 def to_sgf(coord):
     """Converts from a Minigo coordinate to an SGF coordinate."""
     if coord is None:
-        return ''
+        return ""
     return _SGF_COLUMNS[coord[1]] + _SGF_COLUMNS[coord[0]]
 
 
-_SGF_COLUMNS = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
-_GTP_COLUMNS = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'
+_SGF_COLUMNS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+_GTP_COLUMNS = "ABCDEFGHJKLMNOPQRSTUVWXYZ"
 
 
 def std_check(coord):
@@ -46,9 +46,9 @@ def std_check(coord):
 # print(from_gtp("A2",9))
 def to_color(TYPE):
     if TYPE == gtp.BLACK:
-        return 'b'
+        return "b"
     else:
-        return 'w'
+        return "w"
 
 
 class Sgf_Process:
@@ -62,7 +62,9 @@ class Sgf_Process:
         # Init Output file that Sabaki can later open
         self.file_out_name = file_name
         self.size = size
-        self.top = " " + "".join([print_col_names(_GTP_COLUMNS[val]) for val in range(self.size)])
+        self.top = " " + "".join(
+            [print_col_names(_GTP_COLUMNS[val]) for val in range(self.size)]
+        )
         # Init Game
         self.game = sgf.Sgf_game(size=self.size)
         # self.game = AI_reference
@@ -78,8 +80,6 @@ class Sgf_Process:
 
     def update_game_arr(self, gtp_vertex, TYPE):
         # ASSUMES THAT TYPE IS BLACK OR WHITE VALUED AS 1 or -1 RESPECTIVELY
-
-        x = "a"
         coordinate = from_gtp(gtp_vertex, self.size)
         print(coordinate)
         # gtp -> minigo, i.e row col format
@@ -124,15 +124,24 @@ class Sgf_Process:
         # Some amalgamation of list comprehensions and
         # function abstraction to enable the most cursed repr function
         grid = "\n".join(
-            [str(self.size - i) + "".join([convert_gtp_to_output(self.board[i, k])
-                                   for k in range(len(self.board[0]))]) + "{}".format(self.size - i) for i in
-             range(len(self.board))])
+            [
+                str(self.size - i)
+                + "".join(
+                    [
+                        convert_gtp_to_output(self.board[i, k])
+                        for k in range(len(self.board[0]))
+                    ]
+                )
+                + "{}".format(self.size - i)
+                for i in range(len(self.board))
+            ]
+        )
         return "\n".join([self.top, grid, self.top])
 
     def remove(self, color: gtp, s_coord, to_check):
         def prev_dup(checking, checked):
             k = 0
-            l_n_c = len(checking) # Length of Node Checking
+            l_n_c = len(checking)  # Length of Node Checking
             to_re = to_check.copy()
             while k < l_n_c:
                 was_found = False
@@ -186,7 +195,9 @@ class Sgf_Process:
     def create_sgf(self):
         try:
             with open(self.file_out_name, "wb") as f:
-                f.write(self.game.serialise())
+                f.write(
+                    self.game.serialise()
+                )  # Turn this into a valid FF[4] standard SGF file to a file out name
             return True
         except FileNotFoundError:
             return False

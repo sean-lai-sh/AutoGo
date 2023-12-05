@@ -1,4 +1,5 @@
 from go_processing import *
+
 print_player_text = "Please make your decision: \n -Move i.e A3 \n -Pass: 'PASS' \n -resign: 'resign' \n Your Input:"
 
 
@@ -28,11 +29,14 @@ def parseScore(score):
         print("Black won with a score of ", score)
     else:
         print("White won with a score of ", score)
+
+
 def gnugo_init():
     AI = pex.PopenSpawn("gnugo --mode gtp", encoding="utf-8")
     AI.sendline("boardsize 9")
     AI.sendline("clear_board")
     return AI
+
 
 def main():
     # model = input("Choose, gnugo or leelazero")

@@ -1,8 +1,8 @@
 import serial
 import time
 
-if __name__ == '__main__':
-    ser = serial.Serial('/dev/ttyACM0', 9600)
+if __name__ == "__main__":
+    ser = serial.Serial("/dev/ttyACM0", 9600)
     ser.reset_input_buffer()
 
     cond = True
@@ -11,6 +11,6 @@ if __name__ == '__main__':
         input_str = raw_input("put something here: ")
         input_str = bytes(input_str + "\n")
         ser.write(input_str)
-        line = ser.readline().decode('utf-8').rstrip()
+        line = ser.readline().decode("utf-8").rstrip()
         print(line)
         time.sleep(1)

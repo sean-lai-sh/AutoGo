@@ -6,8 +6,9 @@ from go_processing import from_gtp
 
 
 class Motors:
-
-    def __init__(self, game_processor, ai_color, player_color, board_size=9, start_pos=(0, 0)):
+    def __init__(
+        self, game_processor, ai_color, player_color, board_size=9, start_pos=(0, 0)
+    ):
         self.current_pos = start_pos
         self.board_size = board_size
         # self.ser = serial.Serial('/dev/ttyACM0', 9600)
@@ -22,14 +23,14 @@ class Motors:
         self.ser.reset_input_buffer()
         input_str = bytes(direction + "\n")
         self.ser.write(input_str)
-        line = self.ser.readline().decode('utf-8').rstrip()
+        line = self.ser.readline().decode("utf-8").rstrip()
         print(line)
         time.sleep(1)
 
     def close(self):
         self.ser.close()
 
-    class Node():
+    class Node:
         """A node class for A* Pathfinding"""
 
         def __init__(self, parent=None, position=None):
@@ -61,7 +62,6 @@ class Motors:
 
         # Loop until you find the end
         while len(open_list) > 0:
-
             # Get the current node
             current_node = open_list[0]
             current_index = 0
@@ -85,15 +85,29 @@ class Motors:
 
             # Generate children
             children = []
-            for new_position in [(0, -1), (0, 1), (-1, 0), (1, 0), (-1, -1), (-1, 1), (1, -1),
-                                 (1, 1)]:  # Adjacent squares
-
+            for new_position in [
+                (0, -1),
+                (0, 1),
+                (-1, 0),
+                (1, 0),
+                (-1, -1),
+                (-1, 1),
+                (1, -1),
+                (1, 1),
+            ]:  # Adjacent squares
                 # Get node position
-                node_position = (current_node.position[0] + new_position[0], current_node.position[1] + new_position[1])
+                node_position = (
+                    current_node.position[0] + new_position[0],
+                    current_node.position[1] + new_position[1],
+                )
 
                 # Make sure within range
-                if node_position[0] > (len(maze) - 1) or node_position[0] < 0 or node_position[1] > (
-                        len(maze[len(maze) - 1]) - 1) or node_position[1] < 0:
+                if (
+                    node_position[0] > (len(maze) - 1)
+                    or node_position[0] < 0
+                    or node_position[1] > (len(maze[len(maze) - 1]) - 1)
+                    or node_position[1] < 0
+                ):
                     continue
 
                 # Make sure walkable terrain
@@ -108,7 +122,6 @@ class Motors:
 
             # Loop through children
             for child in children:
-
                 # Child is on the closed list
                 for closed_child in closed_list:
                     if child == closed_child:
@@ -117,7 +130,8 @@ class Motors:
                 # Create the f, g, and h values
                 child.g = current_node.g + 1
                 child.h = ((child.position[0] - end_node.position[0]) ** 2) + (
-                        (child.position[1] - end_node.position[1]) ** 2)
+                    (child.position[1] - end_node.position[1]) ** 2
+                )
                 child.f = child.g + child.h
 
                 # Child is already in the open list
@@ -147,11 +161,15 @@ class Motors:
 
     def pickup(self, end_pos):
         # TODO: magnet off
-        move_lst = self.translate_astar(self.astar(self.game_state, self.current_pos, self.piece_start))
+        move_lst = self.translate_astar(
+            self.astar(self.game_state, self.current_pos, self.piece_start)
+        )
         self.move_through_list(move_lst)
         # TODO: magnet on
         self.current_pos = self.piece_start
-        move_lst = self.translate_astar(self.astar(self.game_state, self.current_pos, end_pos))
+        move_lst = self.translate_astar(
+            self.astar(self.game_state, self.current_pos, end_pos)
+        )
         self.move_through_list(move_lst)
         # TODO: magnet off
 
@@ -161,11 +179,15 @@ class Motors:
         else:
             end_pos = self.white_cap
         # TODO: magnet off
-        move_lst = self.translate_astar(self.astar(self.game_state, self.current_pos, start_pos))
+        move_lst = self.translate_astar(
+            self.astar(self.game_state, self.current_pos, start_pos)
+        )
         self.current_pos = start_pos
         self.move_through_list(move_lst)
         # TODO: magnet on
-        move_lst = self.translate_astar(self.astar(self.game_state, self.current_pos, end_pos))
+        move_lst = self.translate_astar(
+            self.astar(self.game_state, self.current_pos, end_pos)
+        )
         self.current_pos = end_pos
         # TODO: magnet off
 

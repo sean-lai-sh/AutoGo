@@ -24,6 +24,7 @@ E_DELAY = 0.0005
 # Open I2C interface
 bus = smbus.SMBus(1)
 
+
 def lcd_init():
     # Initialise display
     lcd_byte(0x33, LCD_CMD)  # 110011 Initialise
@@ -74,7 +75,6 @@ def lcd_string(message, line):
 
 
 class lcd_visuals:
-
     def __init__(self):
         lcd_init()
         self.first_line = ""
@@ -91,5 +91,3 @@ class lcd_visuals:
     def clear_out(self):
         self.first_line = ""
         self.second_line = ""
-
-

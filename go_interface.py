@@ -44,13 +44,13 @@ def get_setting(visual: lcd_visuals):
 def get_color(visual: lcd_visuals):
     val = ""
     visual.set_input("Color?", "'B' or 'W': " + val)
-    while not (val == 'B' or val == 'W'):
+    while not (val == "B" or val == "W"):
         visual.output()
 
         val = input("B or W")
         visual.set_input("Color?", "'B' or 'W': " + val)
 
-    if val == 'B':
+    if val == "B":
         val = "black"
         visual.set_input("You are Black", "Good Luck!")
     else:
@@ -62,7 +62,7 @@ def get_color(visual: lcd_visuals):
 
 def get_vertex(visuals, board):
     all_char = "ABCDEFGHIJKMNOPQRSTUVWXYZ"
-    valid_chars = all_char[:board.size]
+    valid_chars = all_char[: board.size]
     # input validation
     visuals.set_input("Enter your move", "Letter Number")
     valid_input_given = False
@@ -72,7 +72,11 @@ def get_vertex(visuals, board):
         user_input = input("enter your move").upper()
         if user_input == "pass" or user_input == "resign":
             valid_input_given = True
-        elif user_input[0] in valid_chars and user_input[1:].isdigit() and 1 <= int(user_input[1:]) <= board.size:
+        elif (
+            user_input[0] in valid_chars
+            and user_input[1:].isdigit()
+            and 1 <= int(user_input[1:]) <= board.size
+        ):
             valid_input_given = True
         else:
             visuals.set_input("Invalid. Type letter", "number. ex: A5")

@@ -17,8 +17,8 @@ pip install numpy
 pip install sgfmill
 pip install pyserial
 pip install pexpect
-pip install pandas
 pip install AppOpener
+pip install tk
 ````
 Install Node Dependencies:
 ````commandline

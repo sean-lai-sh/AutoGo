@@ -1,9 +1,9 @@
 import pexpect.popen_spawn as pex
+
 # TODO SWAP TO pexpect
 
 
-
-def sendcommand(gtp_instance:pex.PopenSpawn, command: str, args, expect_str="="):
+def sendcommand(gtp_instance: pex.PopenSpawn, command: str, args, expect_str="="):
     # TODO SWAP TO pex.spawn when porting to unix
     if args is None:
         send_str = command  # Used for certain commands like clearboard with no args
@@ -52,6 +52,7 @@ def final_score(gtp_instance):
 
 def close(gtp_instance):
     sendcommand(gtp_instance, "sendeof", None)
+
 
 # GNUGO = ["gnugo", "--mode", "gtp"]
 # GNUGO_LEVEL_ONE = ["gnugo.exe", "--mode", "gtp", "--level", "1"]
