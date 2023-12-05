@@ -13,11 +13,12 @@ Language Versions:
 
 Install Python Dependencies
 ````commandline
-pip3 install numpy
-pip3 install sgfmill
-pip3 install pyserial
-pip3 install pexpect
-pip3 install pandas
+pip install numpy
+pip install sgfmill
+pip install pyserial
+pip install pexpect
+pip install pandas
+pip install AppOpener
 ````
 Install Node Dependencies:
 ````commandline

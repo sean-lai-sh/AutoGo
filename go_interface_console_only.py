@@ -28,13 +28,15 @@ def parseScore(score):
         print("Black won with a score of ", score)
     else:
         print("White won with a score of ", score)
-
-
-def main():
-    # model = input("Choose, gnugo or leelazero")
+def gnugo_init():
     AI = pex.PopenSpawn("gnugo --mode gtp", encoding="utf-8")
     AI.sendline("boardsize 9")
     AI.sendline("clear_board")
+    return AI
+
+def main():
+    # model = input("Choose, gnugo or leelazero")
+    AI = gnugo_init()
     f_name = ""
     game_processor = Sgf_Process(9, f_name, AI)
     Player_Color = input("choose black or white")

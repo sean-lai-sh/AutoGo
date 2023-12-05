@@ -3,15 +3,17 @@ import serial
 import time
 import gtp
 from go_processing import from_gtp
+
+
 class Motors:
 
-    def __init__(self, game_processor, ai_color, player_color, board_size = 9, start_pos = (0,0)):
+    def __init__(self, game_processor, ai_color, player_color, board_size=9, start_pos=(0, 0)):
         self.current_pos = start_pos
         self.board_size = board_size
         # self.ser = serial.Serial('/dev/ttyACM0', 9600)
         # self.ser.reset_input_buffer()
 
-        self.game_state = np.zeros((self.board_size + 1,self.board_size + 1))
+        self.game_state = np.zeros((self.board_size + 1, self.board_size + 1))
         self.piece_start = (10, 10)
         self.black_cap = (0, 10)
         self.white_cap = (10, 0)
@@ -115,7 +117,7 @@ class Motors:
                 # Create the f, g, and h values
                 child.g = current_node.g + 1
                 child.h = ((child.position[0] - end_node.position[0]) ** 2) + (
-                            (child.position[1] - end_node.position[1]) ** 2)
+                        (child.position[1] - end_node.position[1]) ** 2)
                 child.f = child.g + child.h
 
                 # Child is already in the open list
@@ -144,22 +146,21 @@ class Motors:
             self.send_motor_instruction(step)
 
     def pickup(self, end_pos):
-        #TODO: magnet off
+        # TODO: magnet off
         move_lst = self.translate_astar(self.astar(self.game_state, self.current_pos, self.piece_start))
         self.move_through_list(move_lst)
-        #TODO: magnet on
+        # TODO: magnet on
         self.current_pos = self.piece_start
         move_lst = self.translate_astar(self.astar(self.game_state, self.current_pos, end_pos))
         self.move_through_list(move_lst)
-        #TODO: magnet off
-
+        # TODO: magnet off
 
     def dropoff(self, start_pos, color):
         if color == gtp.BLACK:
             end_pos = self.black_cap
         else:
             end_pos = self.white_cap
-        #TODO: magnet off
+        # TODO: magnet off
         move_lst = self.translate_astar(self.astar(self.game_state, self.current_pos, start_pos))
         self.current_pos = start_pos
         self.move_through_list(move_lst)
@@ -168,15 +169,9 @@ class Motors:
         self.current_pos = end_pos
         # TODO: magnet off
 
-
     def move(self, end_pos, move_color):
         self.pickup(end_pos)
+
     def multi_move(self, lst_moves, move_color):
         for moves in lst_moves:
             self.dropoff(moves, move_color)
-
-
-
-
-
-

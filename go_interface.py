@@ -1,11 +1,14 @@
 """
 Import Statements
 """
+import time
+
 import gtp.gtp
 from go_processing import *
 from lcd import lcd_visuals
 from gtp import gtp
-from motor import motors
+from motor import Motors
+from AppOpener import open
 import os
 import random
 import string
@@ -113,7 +116,7 @@ def gLCL(vertex, board, stone_type, motor):
         motor.multi_move(remove_lst, stone_type)  # remove all the stones from the move
 
 
-def parseScore(score):
+def parseScore(score, panel):
     splitted = score.split("+")
     color = splitted[0]
     score = splitted[1]
@@ -123,13 +126,55 @@ def parseScore(score):
         print("White won with a score of ", score)
 
 
-def main():
-    # model = input("Choose, gnugo or leelazero")
+def getModel(panel):
+    level = -1
+    panel.set_input("Select Difficulty", "1-12: ")
+    while 1 <= level <= 12:
+        panel.output()
+        level = input("Select Difficulty")
+        if not level.isdigit():
+            panel.set_input("Use a number", "from 1-12")
+        else:
+            panel.set_input("Select Difficulty", "1-12:")
+    panel.set_input("Difficulty:{}".format(level), "")
+    print(level)
+    panel.output()
+    time.sleep(1000)
+    return level
+
+
+def gnugo_init():
     AI = pex.PopenSpawn("gnugo --mode gtp", encoding="utf-8")
     AI.sendline("boardsize 9")
     AI.sendline("clear_board")
+    return AI
+
+
+def katago_init():
+    AI = pex.PopenSpawn("katago.exe gtp", encoding="utf-8")
+    return AI
+
+
+def find_file(panel, file_ext):
+    if len(file_ext) <= 16:
+        panel.set_input(file_ext, "")
+    elif len(file_ext) <= 32:
+        first = file_ext[:16]
+        half = file_ext[16:]
+        panel.set_input(first, half)
+    else:
+        raise Exception("TOOO LONG!!!!")
+
+
+def main():
     panel = lcd_visuals()
-    f_name = ""
+    level = getModel(panel)
+    AI = None
+    if level < 12:
+        AI = gnugo_init()
+    else:
+        AI = katago_init()
+    f_name = generate_valid_file_path()
     game_processor = Sgf_Process(9, f_name, AI)
 
     Player_Color = get_color(panel)
@@ -141,7 +186,7 @@ def main():
     else:
         AI_col = gtp.BLACK
         command = "genmove black"
-    motor = motors(game_processor, AI_col, Player_Color)
+    motor = Motors(game_processor, AI_col, Player_Color)
     while game_processor.eg is False:
         if Player_Color == "black":
             print(game_processor)
@@ -168,7 +213,7 @@ def main():
             vertex = get_vertex(panel, game_processor)
             AI.sendline("play white {}".format(vertex))
             AI.expect("=")
-            if not (vertex == "resign" or vertex ==  "pass"):
+            if not (vertex == "resign" or vertex == "pass"):
                 gLCL(vertex, game_processor, gtp.WHITE, motor)
             else:
                 break
@@ -178,13 +223,16 @@ def main():
     AI.sendline("final_score")
     AI.expect("[\w][+]\d+[.]\d")
     score = AI.after
-    parseScore(score)
+    parseScore(score, panel)
     game_processor.create_sgf()
     print("Game Has ended")
     print("Please find your game at ", game_processor.file_out_name)
+    find_file(panel, f_name)
+    panel.output()
     print("We hope you have had an fun time with out unique way with playing Go!!")
     AI.sendline("quit")  # End AI Instance
     print("Credits; Sean Lai, Andy Li, Ray Eu, Safhira Hack")
+    open("sabaki")
 
 
 main()
