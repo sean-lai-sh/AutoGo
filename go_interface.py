@@ -60,7 +60,7 @@ def get_color(visual: lcd_visuals):
     return str(val)
 
 
-def get_vertex(visuals, board):
+def get_vertex(visuals, board, TYPE):
     all_char = "ABCDEFGHIJKMNOPQRSTUVWXYZ"
     valid_chars = all_char[: board.size]
     # input validation
@@ -76,6 +76,7 @@ def get_vertex(visuals, board):
             user_input[0] in valid_chars
             and user_input[1:].isdigit()
             and 1 <= int(user_input[1:]) <= board.size
+            and not board.is_not_suicide(user_input, TYPE)
         ):
             valid_input_given = True
         else:
@@ -194,7 +195,7 @@ def main():
     while game_processor.eg is False:
         if Player_Color == "black":
             print(game_processor)
-            vertex = get_vertex(panel, game_processor)
+            vertex = get_vertex(panel, game_processor, gtp.BLACK)
             AI.sendline("play black {}".format(vertex))
             AI.expect("=")
             if not (vertex == gtp.RESIGN or vertex == gtp.PASS):
@@ -214,7 +215,7 @@ def main():
 
         if Player_Color == "white":
             print(game_processor)
-            vertex = get_vertex(panel, game_processor)
+            vertex = get_vertex(panel, game_processor, gtp.WHITE)
             AI.sendline("play white {}".format(vertex))
             AI.expect("=")
             if not (vertex == "resign" or vertex == "pass"):

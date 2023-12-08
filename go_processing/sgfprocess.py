@@ -106,6 +106,16 @@ class Sgf_Process:
             self.board[x][y] = gtp.EMPTY
         return final_lst
 
+    def is_not_suicide(self, coord, TYPE):
+        # Stronger conditional for inputting stones in line with most conventional rulesets
+        if not self.isValid(coord):
+            return False
+        else:
+            data = self.remove_stone_path(TYPE, coord)[1]
+            if len(data) > 0:  # Does this
+                return False
+            return True
+
     def isValid(self, coord):
         return (-1 < coord[0] < self.size) and (-1 < coord[1] < self.size)
 

@@ -5,11 +5,18 @@ An automatic go board to allow people to interact with
 
 - ### $100 credit with materials only from Amazon Prime
 
+## Compilers/ Builders:
+
+### [Visual Studio Build Tools 2022](https://visualstudio.microsoft.com/downloads/)
+
+### [Cmake](https://cmake.org/)
+
+### [Node](https://nodejs.org/en)
 
 ## Packages Used:
 Language Versions:
-- Coded on Python 3.11
-- NodeJS
+- #### Python 3.11
+- #### NodeJS 20.10.0 LTS
 
 Install Python Dependencies
 ````commandline
@@ -20,14 +27,15 @@ pip install pexpect
 pip install AppOpener
 pip install tk
 ````
-Install Node Dependencies:
-````commandline
-npm -i
-````
+
+# Examples:
+
+View below file for how it was implemented in the project. == [go_interface.py](https://github.com/sean-lai-sh/AutoGo/blob/main/go_interface.py) ==
+
 
 # Documentation:
 
-### player_vs_ai():
+### go_interface:
 
 >Start a coroutine to run a game with an AI and interface with a physical board.
 Ends when game has two consecutive passes.
