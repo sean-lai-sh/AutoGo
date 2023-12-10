@@ -51,5 +51,8 @@
 # print(game.after)
 
 from AppOpener import open
+from sgfprocess import *
 
-open("sabaki")
+# open("../Sabaki")
+
+print(from_gtp("B7", 7))

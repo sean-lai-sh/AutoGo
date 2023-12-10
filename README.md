@@ -13,7 +13,7 @@ An automatic go board to allow people to interact with
 
 ### [Node](https://nodejs.org/en)
 
-## Packages Used:
+## Packages Used & Installation:
 Language Versions:
 - #### Python 3.11
 - #### NodeJS 20.10.0 LTS
@@ -27,6 +27,8 @@ pip install pexpect
 pip install AppOpener
 pip install tk
 ````
+To install GNUGo and KataGo, please follow their documentation for debugging their installation process. Once setup please ensure that the built model is in the same directory as the go_interface script to avoid file not found errors.
+
 
 # Examples:
 
