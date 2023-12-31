@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="Black">
+    <option name="enabledOnSave" value="true" />
+    <option name="sdkUUID" value="7e71f3bd-b45f-4e94-9d5a-c57b06759128" />
+  </component>
   <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.11 (AutoGo)" project-jdk-type="Python SDK" />
   <component name="PythonCompatibilityInspectionAdvertiser">
     <option name="version" value="3" />

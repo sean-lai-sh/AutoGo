@@ -1,12 +1,12 @@
 #include <Stepper.h>
 
-const int stepsPerRevolution = 100;
+const int stepsPerRevolution = 200;
 Stepper stepper1(stepsPerRevolution, 8, 9, 10, 11);
 
 
 
 void setup() {
-  stepper1.setSpeed(30);
+  stepper1.setSpeed(35);
   Serial.begin(9600);
 }
 
