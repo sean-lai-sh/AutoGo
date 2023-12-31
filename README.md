@@ -10,7 +10,7 @@ an ancient 3000 year-old chinese board game, has been traditionally very hard to
 casual player, with enigmatic "life or death" question books or expensive tutors as the only 
 option to learn these rules. 
 With the advent of [AlphaGo beating Lee Sedol, the best Go player in 2016](https://en.wikipedia.org/wiki/AlphaGo_versus_Lee_Sedol), 
-this opened the flood gates for AI to become suitable mentors and aid in analyzing a players mistakes and helping them improve. 
+this opened the flood gates for AI to become suitable mentors and aid in analyzing a players mistakes to help them improve. 
 AutoGo attempts to bridge the traditionally digital format that may be hard for certain demographics due to language barriers, 
 lack of experience, or cognitive disabilities. 
 Through a physical board, we simplify the process in which new players need to play against a calibrated opponent matching their skill level. 
@@ -31,7 +31,7 @@ This also has an effect of improving their memory abilities which is shown to im
 ### [Node](https://nodejs.org/en)
 
 ## Packages Used & Installation:
-Language Versions:
+Language Vers[README.md](README.md)ions:
 - #### Python 3.11
 - #### NodeJS 20.10.0 LTS
 
