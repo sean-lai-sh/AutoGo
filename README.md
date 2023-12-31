@@ -1,9 +1,26 @@
 # AutoGo AI Go Board
 
-An automatic go board to allow people to interact with
+An automatic go board to allow people to interact with current cutting edge Go AI agents on a physical board.
+Designed in mind for increasing accessibility to the game, with beginners and those with Alzheimer in mind. 
+
+## Problem Context
+
+[Go](https://en.wikipedia.org/wiki/Go_(game)), 
+an ancient 3000 year-old chinese board game, has been traditionally very hard to get into as a 
+casual player, with enigmatic "life or death" question books or expensive tutors as the only 
+option to learn these rules. 
+With the advent of [AlphaGo beating Lee Sedol, the best Go player in 2016](https://en.wikipedia.org/wiki/AlphaGo_versus_Lee_Sedol), 
+this opened the flood gates for AI to become suitable mentors and aid in analyzing a players mistakes and helping them improve. 
+AutoGo attempts to bridge the traditionally digital format that may be hard for certain demographics due to language barriers, 
+lack of experience, or cognitive disabilities. 
+Through a physical board, we simplify the process in which new players need to play against a calibrated opponent matching their skill level. 
+This also has an effect of improving their memory abilities which is shown to improve [early stage Alzheimer's patients](https://www.apa.org/news/press/releases/2002/10/memory-training)
+
+
 ## Constraints
 
 - ### $100 credit with materials only from Amazon Prime
+- ### Note: Additional 50$ used for replacement motors as part of a grant recieved in the second round of building
 
 ## Compilers/ Builders:
 
@@ -13,7 +30,7 @@ An automatic go board to allow people to interact with
 
 ### [Node](https://nodejs.org/en)
 
-## Packages Used:
+## Packages Used & Installation:
 Language Versions:
 - #### Python 3.11
 - #### NodeJS 20.10.0 LTS
@@ -27,6 +44,8 @@ pip install pexpect
 pip install AppOpener
 pip install tk
 ````
+To install GNUGo and KataGo, please follow their documentation for debugging their installation process. Once setup please ensure that the built model is in the same directory as the go_interface script to avoid file not found errors.
+Please also change the TODO if you are using a linux based Distribution as pexpect uses a different class to have the same functionality for devices on Windows.
 
 # Examples:
 

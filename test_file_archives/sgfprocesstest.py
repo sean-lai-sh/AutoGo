@@ -1,6 +1,11 @@
 import unittest
 import numpy as np
-from go_processing import *
+import sys
+
+# setting path
+sys.path.append("../AutoGo")
+
+from AutoGo.sgfprocess import *
 from gtp import gtp
 
 
@@ -42,10 +47,20 @@ class MyTestCase(unittest.TestCase):
             np.array([0, 0]),
         ]
         test_sgf2 = Sgf_Process(7, "", "", board)
-        re_lst2 = []
         final_lst = test_sgf2.update_game_arr("B7", gtp.WHITE)
-        self.assertEqual(correct_lst, final_lst)
-        # print()
+        is_eql = True
+        if len(correct_lst) == len(final_lst):
+            for i in range(len(final_lst)):
+                if (
+                    correct_lst[i][0] != final_lst[i][0]
+                    or correct_lst[i][1] != final_lst[i][1]
+                ):
+                    is_eql = False
+                    break
+
+        else:
+            is_eql = False
+        self.assertEqual(True, is_eql)
 
 
 if __name__ == "__main__":

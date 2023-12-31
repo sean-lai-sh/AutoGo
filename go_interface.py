@@ -4,7 +4,7 @@ Import Statements
 import time
 
 import gtp.gtp
-from go_processing import *
+from sgfprocess import *
 from lcd import lcd_visuals
 from gtp import gtp
 from motor import Motors
@@ -13,9 +13,7 @@ import os
 import random
 import string
 import pexpect.popen_spawn as pex  # TODO CHANGE TO pexpect WHEN PULLED TO LINUX
-import values
 
-Sleep_Constant = values.SLEEP_CONST
 
 PATH = "/"
 
@@ -198,7 +196,7 @@ def main():
             vertex = get_vertex(panel, game_processor, gtp.BLACK)
             AI.sendline("play black {}".format(vertex))
             AI.expect("=")
-            if not (vertex == gtp.RESIGN or vertex == gtp.PASS):
+            if not (vertex == gtp.RESIGN):
                 gLCL(vertex, game_processor, gtp.BLACK, motor)
             else:
                 break

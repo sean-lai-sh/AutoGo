@@ -1,4 +1,5 @@
-from go_processing import *
+from sgfprocess import *
+import pexpect.popen_spawn as pex
 
 print_player_text = "Please make your decision: \n -Move i.e A3 \n -Pass: 'PASS' \n -resign: 'resign' \n Your Input:"
 
