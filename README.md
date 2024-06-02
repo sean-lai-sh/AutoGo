@@ -3,6 +3,9 @@
 An automatic go board to allow people to interact with current cutting edge Go AI agents on a physical board.
 Designed in mind for increasing accessibility to the game, with beginners and those with Alzheimer in mind. 
 
+[Pitch Deck](https://docs.google.com/presentation/d/1m-c53NVoZjykfTUQ7aZriYBSJiH1ZGzQ/edit?usp=sharing&ouid=112388206392190541273&rtpof=true&sd=true)
+ used in NYU Rapid Assembly Design Competition (Fall 2023).
+
 ## Problem Context
 
 [Go](https://en.wikipedia.org/wiki/Go_(game)), 
